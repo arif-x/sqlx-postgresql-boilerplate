@@ -10,4 +10,7 @@ func Dashboard(a *fiber.App) {
 	user := a.Group("/api/v1/users")
 	user.Get("/", controller.UserIndex)
 	user.Get("/:id", controller.UserShow)
+	user.Post("/", controller.UserStore)
+	user.Put("/:id", controller.UserUpdate)
+	user.Delete("/:id", controller.UserDestroy)
 }

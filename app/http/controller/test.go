@@ -22,6 +22,6 @@ func Index(c *fiber.Ctx) error {
 	// }
 
 	return c.JSON(fiber.Map{
-		"data": users,
+		"data": users[0],
 	})
 }

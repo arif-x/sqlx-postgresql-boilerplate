@@ -18,7 +18,7 @@ func Paginate(c *fiber.Ctx) (pageNo int, pageSize int, search string, sortBy str
 	pageSize, pageNo = 10, 1
 
 	if sortBy == "" {
-		sortBy = "id"
+		sortBy = "created_at"
 	}
 
 	if sort == "" {

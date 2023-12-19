@@ -2,10 +2,23 @@
 Todo List
 - [x]  Code Structure
 - [x]  Fix CRUD Sample
-- [ ]  One-to-one & one-to-many relational with native Postgre Query
-- [ ]  Dynamic List
+- [x]  Dynamic List (Get paginate, search, sort by, and sort)
+- [ ]  One-to-one & one-to-many/many-to-many relational with native Postgre Query
+    - [ ]  (One-to-one) Example is in app/repository/public/post_r/PostByUser
+    - [ ]  (One-to-many/Many-to-many) Example is in app/repository/public/post_r/PostSingle
+- [ ]  Auth
+- [ ]  Role & Permission
 
 # Why no ORM?
 - Slow
-- Prone to memory leaks
-- Can be make your server hiccup :V
+- Memory leaks vurnerable
+- Can be make server hiccup
+
+# How to Run DB Migration
+- To create migration file, just run `migrate create -ext sql -dir database/migration -seq your_migration_file`
+- Run if doing up `migrate -path database/migration/ -database "postgresql://postgres:password@localhost:5432/db_name?sslmode=disable" -verbose up`
+- Run if doing down/rollback `migrate -path database/migration/ -database "postgresql://postgres:password@localhost:5432/db_name?sslmode=disable" -verbose down`
+- If you want to migrate with specified file, just run  `migrate -path database/migration/your_migration_file.sql -database "postgresql://postgres:password@localhost:5432/db_name?sslmode=disable" -verbose up`
+
+# How to Run DB Seeder
+- Run `go run database/seeder/main/main.go`

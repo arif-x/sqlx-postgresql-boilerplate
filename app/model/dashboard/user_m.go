@@ -2,10 +2,12 @@ package dashboard
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type User struct {
-	ID        int        `db:"id" json:"id"`
+	ID        uuid.UUID  `db:"id" json:"id"`
 	Name      string     `db:"name" json:"name"`
 	Username  string     `db:"username" json:"username"`
 	Email     string     `db:"email" json:"email"`
@@ -14,7 +16,7 @@ type User struct {
 }
 
 type StoreUser struct {
-	ID       int    `json:"id"`
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
@@ -22,7 +24,7 @@ type StoreUser struct {
 }
 
 type UpdateUser struct {
-	ID       int    `json:"id"`
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Email    string `json:"email"`

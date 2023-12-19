@@ -2,7 +2,6 @@ package dashboard
 
 import (
 	"database/sql"
-	"strconv"
 
 	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
 	repo "github.com/arif-x/sqlx-gofiber-boilerplate/app/repository/dashboard"
@@ -26,13 +25,10 @@ func UserIndex(c *fiber.Ctx) error {
 }
 
 func UserShow(c *fiber.Ctx) error {
-	ID, err := strconv.ParseInt(c.Params("id"), 10, 32)
-	if err != nil {
-		return response.BadRequest(c, err)
-	}
+	ID := c.Params("id")
 
 	repository := repo.NewUserRepo(database.GetDB())
-	user, err := repository.Show(int(ID))
+	user, err := repository.Show(ID)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -63,7 +59,7 @@ func UserStore(c *fiber.Ctx) error {
 }
 
 func UserUpdate(c *fiber.Ctx) error {
-	ID, err := strconv.Atoi(c.Params("id"))
+	ID := c.Params("id")
 
 	user := &model.UpdateUser{}
 
@@ -82,7 +78,7 @@ func UserUpdate(c *fiber.Ctx) error {
 }
 
 func UserDestroy(c *fiber.Ctx) error {
-	ID, err := strconv.Atoi(c.Params("id"))
+	ID := c.Params("id")
 
 	repository := repo.NewUserRepo(database.GetDB())
 	res, err := repository.Destroy(ID)

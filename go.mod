@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/bxcodec/faker/v3 v3.6.0 // indirect
 	github.com/gofiber/utils v0.0.10 // indirect
 	github.com/golang-jwt/jwt/v4 v4.0.0 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
@@ -35,11 +36,13 @@ require (
 )
 
 require (
+	github.com/danvergara/seeder v0.5.0
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gofiber/fiber v1.14.6
 	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/gofiber/jwt/v2 v2.2.7
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/joho/godotenv v1.5.1
+	github.com/kristijorgji/goseeder v1.0.3
 	golang.org/x/sys v0.14.0 // indirect
 )

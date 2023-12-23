@@ -7,7 +7,7 @@ import (
 )
 
 type PostCategory struct {
-	ID        uuid.UUID  `db:"id" json:"id"`
+	UUID      uuid.UUID  `db:"uuid" json:"uuid"`
 	Name      string     `db:"name" json:"name"`
 	CreatedAt time.Time  `db:"created_at" json:"created_at"`
 	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
@@ -15,7 +15,7 @@ type PostCategory struct {
 }
 
 type PostCategoryShow struct {
-	ID        uuid.UUID  `db:"id" json:"id"`
+	UUID      uuid.UUID  `db:"uuid" json:"uuid"`
 	Name      string     `db:"name" json:"name"`
 	CreatedAt time.Time  `db:"created_at" json:"created_at"`
 	UpdatedAt *time.Time `db:"updated_at" json:"updated_at"`
@@ -23,11 +23,9 @@ type PostCategoryShow struct {
 }
 
 type StorePostCategory struct {
-	ID   string `db:"id" json:"id"`
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" form:"name"`
 }
 
 type UpdatePostCategory struct {
-	ID   string `db:"id" json:"id"`
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" form:"name"`
 }

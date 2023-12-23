@@ -12,7 +12,6 @@ type JSONRaw json.RawMessage
 // Value ...
 func (j JSONRaw) Value() (driver.Value, error) {
 	byteArr := []byte(j)
-
 	return driver.Value(byteArr), nil
 }
 
@@ -22,12 +21,7 @@ func (j *JSONRaw) Scan(src interface{}) error {
 	if !ok {
 		return error(errors.New("Scan source was not []bytes"))
 	}
-	err := json.Unmarshal(asBytes, &j)
-	if err != nil {
-		return error(errors.New("Scan could not unmarshal to []string"))
-	}
-
-	return nil
+	return json.Unmarshal(asBytes, j)
 }
 
 // MarshalJSON ...

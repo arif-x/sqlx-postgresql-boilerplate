@@ -24,7 +24,7 @@ type PostCategoryRepo struct {
 }
 
 func (repo *PostCategoryRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.PostCategory, int, error) {
-	_select := "id, name, created_at, updated_at, deleted_at"
+	_select := "uuid, name, created_at, updated_at, deleted_at"
 	_conditions := database.Search([]string{"name"}, search)
 	_order := database.OrderBy(sort_by, sort)
 	_limit := database.Limit(limit, offset)
@@ -45,7 +45,7 @@ func (repo *PostCategoryRepo) Index(limit int, offset uint, search string, sort_
 	for rows.Next() {
 		var i model.PostCategory
 		if err := rows.Scan(
-			&i.ID,
+			&i.UUID,
 			&i.Name,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -67,9 +67,9 @@ func (repo *PostCategoryRepo) Index(limit int, offset uint, search string, sort_
 
 func (repo *PostCategoryRepo) Show(ID string) (model.PostCategoryShow, error) {
 	var postCategory model.PostCategoryShow
-	query := "SELECT id, name, created_at, updated_at, deleted_at FROM post_categories WHERE id = $1 LIMIT 1"
+	query := "SELECT uuid, name, created_at, updated_at, deleted_at FROM post_categories WHERE uuid = $1 LIMIT 1"
 	err := repo.db.QueryRowContext(context.Background(), query, ID).Scan(
-		&postCategory.ID,
+		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,
 		&postCategory.UpdatedAt,
@@ -86,7 +86,7 @@ func (repo *PostCategoryRepo) Store(request *model.StorePostCategory) (model.Pos
 	RETURNING id, name, created_at`
 	var postCategory model.PostCategory
 	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, time.Now()).Scan(
-		&postCategory.ID,
+		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,
 	)
@@ -101,7 +101,7 @@ func (repo *PostCategoryRepo) Update(ID string, request *model.UpdatePostCategor
 	RETURNING id, name, created_at, updated_at`
 	var postCategory model.PostCategory
 	err := repo.db.QueryRowContext(context.Background(), query, ID, request.Name, time.Now()).Scan(
-		&postCategory.ID,
+		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,
 		&postCategory.UpdatedAt,
@@ -117,7 +117,7 @@ func (repo *PostCategoryRepo) Destroy(ID string) (model.PostCategory, error) {
 	RETURNING id, name, created_at, updated_at, deleted_at`
 	var postCategory model.PostCategory
 	err := repo.db.QueryRowContext(context.Background(), query, ID, time.Now(), time.Now()).Scan(
-		&postCategory.ID,
+		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,
 		&postCategory.UpdatedAt,

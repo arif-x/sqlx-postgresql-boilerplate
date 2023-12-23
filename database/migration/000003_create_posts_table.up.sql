@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS posts (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    post_category_id UUID NOT NULL,
-    user_id UUID NOT NULL,
+	id BIGSERIAL PRIMARY KEY,
+    uuid UUID UNIQUE DEFAULT gen_random_uuid(),
+    post_category_uuid UUID NOT NULL,
+    user_uuid UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,

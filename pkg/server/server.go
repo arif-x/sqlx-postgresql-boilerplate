@@ -34,6 +34,7 @@ func Serve() {
 	middleware.FiberMiddleware(app)
 
 	// Routes.
+	route.Auth(app)
 	route.Dashboard(app)
 
 	// signal channel to capture system calls

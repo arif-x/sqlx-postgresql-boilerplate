@@ -24,7 +24,7 @@ type UserRepo struct {
 }
 
 func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.User, int, error) {
-	_select := "id, name, email, username, created_at, updated_at, deleted_at"
+	_select := "uuid, name, email, username, created_at, updated_at, deleted_at"
 	_conditions := database.Search([]string{"name", "email", "username"}, search)
 	_order := database.OrderBy(sort_by, sort)
 	_limit := database.Limit(limit, offset)
@@ -45,7 +45,7 @@ func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by strin
 	for rows.Next() {
 		var i model.User
 		if err := rows.Scan(
-			&i.ID,
+			&i.UUID,
 			&i.Name,
 			&i.Email,
 			&i.Username,
@@ -69,9 +69,9 @@ func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by strin
 
 func (repo *UserRepo) Show(ID string) (model.UserShow, error) {
 	var user model.UserShow
-	query := "SELECT id, name, email, username, created_at, updated_at, deleted_at FROM users WHERE id = $1 LIMIT 1"
+	query := "SELECT uuid, name, email, username, created_at, updated_at, deleted_at FROM users WHERE id = $1 LIMIT 1"
 	err := repo.db.QueryRowContext(context.Background(), query, ID).Scan(
-		&user.ID,
+		&user.UUID,
 		&user.Name,
 		&user.Email,
 		&user.Username,
@@ -86,11 +86,11 @@ func (repo *UserRepo) Show(ID string) (model.UserShow, error) {
 }
 
 func (repo *UserRepo) Store(request *model.StoreUser) (model.User, error) {
-	query := `INSERT INTO "users" (id, name, username, email, password, created_at) VALUES($1, $2, $3, $4, $5, $6) 
-	RETURNING id, name, username, email, created_at`
+	query := `INSERT INTO "users" (uuid, name, username, email, password, created_at) VALUES($1, $2, $3, $4, $5, $6) 
+	RETURNING uuid, name, username, email, created_at`
 	var user model.User
 	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, request.Username, request.Email, request.Password, time.Now()).Scan(
-		&user.ID,
+		&user.UUID,
 		&user.Name,
 		&user.Username,
 		&user.Email,
@@ -104,11 +104,11 @@ func (repo *UserRepo) Store(request *model.StoreUser) (model.User, error) {
 
 func (repo *UserRepo) Update(ID string, request *model.UpdateUser) (model.User, error) {
 	if request.Password == "" {
-		query := `UPDATE "users" SET name = $2, username = $3, email = $4, updated_at = $5 WHERE id = $1 
-		RETURNING id, name, username, email, created_at, updated_at`
+		query := `UPDATE "users" SET name = $2, username = $3, email = $4, updated_at = $5 WHERE uuid = $1 
+		RETURNING uuid, name, username, email, created_at, updated_at`
 		var user model.User
 		err := repo.db.QueryRowContext(context.Background(), query, ID, request.Name, request.Username, request.Email, time.Now()).Scan(
-			&user.ID,
+			&user.UUID,
 			&user.Name,
 			&user.Username,
 			&user.Email,
@@ -120,11 +120,11 @@ func (repo *UserRepo) Update(ID string, request *model.UpdateUser) (model.User, 
 		}
 		return user, err
 	} else {
-		query := `UPDATE "users" SET name = $2, username = $3, email = $4, password = $5, updated_at = $6 WHERE id = $1 
-		RETURNING id, name, username, email, created_at, updated_at`
+		query := `UPDATE "users" SET name = $2, username = $3, email = $4, password = $5, updated_at = $6 WHERE uuid = $1 
+		RETURNING uuid, name, username, email, created_at, updated_at`
 		var user model.User
 		err := repo.db.QueryRowContext(context.Background(), query, ID, request.Name, request.Username, request.Email, request.Password, time.Now()).Scan(
-			&user.ID,
+			&user.UUID,
 			&user.Name,
 			&user.Username,
 			&user.Email,
@@ -139,11 +139,11 @@ func (repo *UserRepo) Update(ID string, request *model.UpdateUser) (model.User, 
 }
 
 func (repo *UserRepo) Destroy(ID string) (model.User, error) {
-	query := `UPDATE "users" SET updated_at = $2, deleted_at = $3 WHERE id = $1 
-	RETURNING id, name, username, email, created_at, updated_at, deleted_at`
+	query := `UPDATE "users" SET updated_at = $2, deleted_at = $3 WHERE uuid = $1 
+	RETURNING uuid, name, username, email, created_at, updated_at, deleted_at`
 	var user model.User
 	err := repo.db.QueryRowContext(context.Background(), query, ID, time.Now(), time.Now()).Scan(
-		&user.ID,
+		&user.UUID,
 		&user.Name,
 		&user.Username,
 		&user.Email,

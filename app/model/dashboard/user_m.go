@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID  `db:"id" json:"id"`
+	UUID      uuid.UUID  `db:"uuid" json:"uuid"`
 	Name      string     `db:"name" json:"name"`
 	Username  string     `db:"username" json:"username"`
 	Email     string     `db:"email" json:"email"`
@@ -17,7 +17,7 @@ type User struct {
 }
 
 type UserShow struct {
-	ID        uuid.UUID  `db:"id" json:"id"`
+	UUID      uuid.UUID  `db:"uuid" json:"uuid"`
 	Name      string     `db:"name" json:"name"`
 	Username  string     `db:"username" json:"username"`
 	Email     string     `db:"email" json:"email"`
@@ -27,17 +27,15 @@ type UserShow struct {
 }
 
 type StoreUser struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name     string `json:"name" form:"name"`
+	Username string `json:"username" form:"username"`
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
 }
 
 type UpdateUser struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name     string `json:"name" form:"name"`
+	Username string `json:"username" form:"username"`
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
 }

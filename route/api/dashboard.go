@@ -1,7 +1,6 @@
 package api
 
 import (
-	controller "github.com/arif-x/sqlx-gofiber-boilerplate/app/http/controller"
 	controllers "github.com/arif-x/sqlx-gofiber-boilerplate/app/http/controller/dashboard"
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,7 +27,8 @@ func Dashboard(a *fiber.App) {
 	post := dasboard.Group("/post")
 	post.Get("/", controllers.PostIndex)
 	post.Get("/:id", controllers.PostShow)
+	post.Post("/", controllers.PostStore)
+	post.Put("/:id", controllers.PostUpdate)
+	post.Delete("/:id", controllers.PostDestroy)
 
-	test := a.Group("/api/v1/test")
-	test.Get("/", controller.Index)
 }

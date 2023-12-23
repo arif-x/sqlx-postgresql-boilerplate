@@ -3,7 +3,6 @@ package dashboard
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
@@ -13,10 +12,10 @@ import (
 
 type PostRepository interface {
 	Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Post, int, error)
-	Show(ID string) (model.PostShow, error)
+	Show(UUID string) (model.PostShow, error)
 	Store(model *model.StorePost) (model.Post, error)
-	Update(ID string, request *model.UpdatePost) (model.Post, error)
-	Destroy(ID string) (model.Post, error)
+	Update(UUID string, request *model.UpdatePost) (model.Post, error)
+	Destroy(UUID string) (model.Post, error)
 }
 
 type PostRepo struct {
@@ -72,8 +71,6 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	var items []model.Post
 	for rows.Next() {
 		var i model.Post
-		// var UserJSON *string
-		// var PostCategoryJSON *string
 		err := rows.Scan(
 			&i.UUID,
 			&i.PostCategoryUUID,
@@ -86,22 +83,21 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 			&i.PostCategory,
 		)
 		if err != nil {
-			log.Fatal(err)
 			return nil, 0, err
 		}
 		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
-		log.Fatal(err)
+		return nil, 0, err
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, 0, err
 	}
 
 	return items, count, nil
 }
 
-func (repo *PostRepo) Show(ID string) (model.PostShow, error) {
+func (repo *PostRepo) Show(UUID string) (model.PostShow, error) {
 	var post model.PostShow
 	query := `
 	SELECT 
@@ -133,10 +129,10 @@ func (repo *PostRepo) Show(ID string) (model.PostShow, error) {
 		)
 	END AS post_category
 	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	WHERE posts.id = $1 LIMIT 1
+	WHERE posts.uuid = $1 LIMIT 1
 	`
 
-	err := repo.db.QueryRowContext(context.Background(), query, ID).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
 		&post.UUID,
 		&post.PostCategoryUUID,
 		&post.UserUUID,
@@ -188,11 +184,11 @@ func (repo *PostRepo) Update(ID string, request *model.UpdatePost) (model.Post, 
 	return post, err
 }
 
-func (repo *PostRepo) Destroy(ID string) (model.Post, error) {
+func (repo *PostRepo) Destroy(UUID string) (model.Post, error) {
 	query := `UPDATE "posts" SET updated_at = $2, deleted_at = $3 WHERE uuid = $1 
 	RETURNING uuid, post_category_uuid, user_uuid, title, content, created_at, updated_at, deleted_at`
 	var post model.Post
-	err := repo.db.QueryRowContext(context.Background(), query, ID, time.Now(), time.Now()).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, UUID, time.Now(), time.Now()).Scan(
 		&post.UUID,
 		&post.PostCategoryUUID,
 		&post.UserUUID,

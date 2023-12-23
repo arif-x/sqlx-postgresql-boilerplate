@@ -3,7 +3,6 @@ package dashboard
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
@@ -13,10 +12,10 @@ import (
 
 type PostCategoryRepository interface {
 	Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.PostCategory, int, error)
-	Show(ID string) (model.PostCategoryShow, error)
+	Show(UUID string) (model.PostCategoryShow, error)
 	Store(model *model.StorePostCategory) (model.PostCategory, error)
-	Update(ID string, request *model.UpdatePostCategory) (model.PostCategory, error)
-	Destroy(ID string) (model.PostCategory, error)
+	Update(UUID string, request *model.UpdatePostCategory) (model.PostCategory, error)
+	Destroy(UUID string) (model.PostCategory, error)
 }
 
 type PostCategoryRepo struct {
@@ -56,19 +55,19 @@ func (repo *PostCategoryRepo) Index(limit int, offset uint, search string, sort_
 		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
-		log.Fatal(err)
+		return nil, 0, err
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, 0, err
 	}
 
 	return items, count, nil
 }
 
-func (repo *PostCategoryRepo) Show(ID string) (model.PostCategoryShow, error) {
+func (repo *PostCategoryRepo) Show(UUID string) (model.PostCategoryShow, error) {
 	var postCategory model.PostCategoryShow
 	query := "SELECT uuid, name, created_at, updated_at, deleted_at FROM post_categories WHERE uuid = $1 LIMIT 1"
-	err := repo.db.QueryRowContext(context.Background(), query, ID).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
 		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,
@@ -82,8 +81,8 @@ func (repo *PostCategoryRepo) Show(ID string) (model.PostCategoryShow, error) {
 }
 
 func (repo *PostCategoryRepo) Store(request *model.StorePostCategory) (model.PostCategory, error) {
-	query := `INSERT INTO "post_categories" (id, name, created_at) VALUES($1, $2, $3) 
-	RETURNING id, name, created_at`
+	query := `INSERT INTO "post_categories" (uuid, name, created_at) VALUES($1, $2, $3) 
+	RETURNING uuid, name, created_at`
 	var postCategory model.PostCategory
 	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, time.Now()).Scan(
 		&postCategory.UUID,
@@ -96,11 +95,11 @@ func (repo *PostCategoryRepo) Store(request *model.StorePostCategory) (model.Pos
 	return postCategory, err
 }
 
-func (repo *PostCategoryRepo) Update(ID string, request *model.UpdatePostCategory) (model.PostCategory, error) {
-	query := `UPDATE "post_categories" SET name = $2, updated_at = $3 WHERE id = $1 
-	RETURNING id, name, created_at, updated_at`
+func (repo *PostCategoryRepo) Update(UUID string, request *model.UpdatePostCategory) (model.PostCategory, error) {
+	query := `UPDATE "post_categories" SET name = $2, updated_at = $3 WHERE uuid = $1 
+	RETURNING uuid, name, created_at, updated_at`
 	var postCategory model.PostCategory
-	err := repo.db.QueryRowContext(context.Background(), query, ID, request.Name, time.Now()).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, UUID, request.Name, time.Now()).Scan(
 		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,
@@ -112,11 +111,11 @@ func (repo *PostCategoryRepo) Update(ID string, request *model.UpdatePostCategor
 	return postCategory, err
 }
 
-func (repo *PostCategoryRepo) Destroy(ID string) (model.PostCategory, error) {
-	query := `UPDATE "post_categories" SET updated_at = $2, deleted_at = $3 WHERE id = $1 
-	RETURNING id, name, created_at, updated_at, deleted_at`
+func (repo *PostCategoryRepo) Destroy(UUID string) (model.PostCategory, error) {
+	query := `UPDATE "post_categories" SET updated_at = $2, deleted_at = $3 WHERE uuid = $1 
+	RETURNING uuid, name, created_at, updated_at, deleted_at`
 	var postCategory model.PostCategory
-	err := repo.db.QueryRowContext(context.Background(), query, ID, time.Now(), time.Now()).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, UUID, time.Now(), time.Now()).Scan(
 		&postCategory.UUID,
 		&postCategory.Name,
 		&postCategory.CreatedAt,

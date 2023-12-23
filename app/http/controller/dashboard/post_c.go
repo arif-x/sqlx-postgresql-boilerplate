@@ -2,7 +2,6 @@ package dashboard
 
 import (
 	"database/sql"
-	"log"
 
 	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
 	repo "github.com/arif-x/sqlx-gofiber-boilerplate/app/repository/dashboard"
@@ -32,7 +31,6 @@ func PostShow(c *fiber.Ctx) error {
 	post, err := repository.Show(ID)
 
 	if err != nil {
-		log.Fatal(err)
 		if err == sql.ErrNoRows {
 			return response.NotFound(c, err)
 		} else {

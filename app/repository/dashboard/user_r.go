@@ -3,7 +3,6 @@ package dashboard
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
@@ -13,10 +12,10 @@ import (
 
 type UserRepository interface {
 	Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.User, int, error)
-	Show(ID string) (model.UserShow, error)
+	Show(UUID string) (model.UserShow, error)
 	Store(model *model.StoreUser) (model.User, error)
-	Update(ID string, request *model.UpdateUser) (model.User, error)
-	Destroy(ID string) (model.User, error)
+	Update(UUID string, request *model.UpdateUser) (model.User, error)
+	Destroy(UUID string) (model.User, error)
 }
 
 type UserRepo struct {
@@ -58,10 +57,10 @@ func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by strin
 		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
-		log.Fatal(err)
+		return nil, 0, err
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, 0, err
 	}
 
 	return items, count, nil

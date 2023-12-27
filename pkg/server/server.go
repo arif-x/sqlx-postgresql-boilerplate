@@ -11,6 +11,7 @@ import (
 	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/database"
 	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/logger"
 	route "github.com/arif-x/sqlx-gofiber-boilerplate/route/api"
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -37,6 +38,7 @@ func Serve() {
 	route.Auth(app)
 	route.Dashboard(app)
 	route.Public(app)
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	// signal channel to capture system calls
 	sigCh := make(chan os.Signal, 1)

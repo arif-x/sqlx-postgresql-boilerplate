@@ -52,7 +52,7 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 		)
 	END AS post_category
 	`
-	_conditions := database.Search([]string{"title", "content", "users.name", "post_categories.name"}, search)
+	_conditions := database.Search([]string{"title", "content", "users.name", "post_categories.name"}, search, "posts.deleted_at")
 	_order := database.OrderBy("posts.id", sort)
 	_limit := database.Limit(limit, offset)
 
@@ -129,7 +129,7 @@ func (repo *PostRepo) Show(UUID string) (model.PostShow, error) {
 		)
 	END AS post_category
 	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	WHERE posts.uuid = $1 LIMIT 1
+	WHERE posts.uuid = $1 AND posts.deleted_at IS NULL LIMIT 1
 	`
 
 	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(

@@ -11,6 +11,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// UserIndex func gets all user.
+// @Description Get all user.
+// @Summary Get all user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param page query integer false "Page no"
+// @Param page_size query integer false "records per page"
+// @Success 200 {object} response.UsersResponse
+// @Failure 400,401,403 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/user [get]
 func UserIndex(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
 	repository := repo.NewUserRepo(database.GetDB())
@@ -24,6 +36,17 @@ func UserIndex(c *fiber.Ctx) error {
 	return response.Index(c, page, limit, count, users)
 }
 
+// UserShow func gets single user.
+// @Description Get single user.
+// @Summary Get single user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} response.UserResponse
+// @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/user/{id} [get]
 func UserShow(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
@@ -34,13 +57,27 @@ func UserShow(c *fiber.Ctx) error {
 		if err == sql.ErrNoRows {
 			return response.NotFound(c, err)
 		} else {
-			response.InternalServerError(c, err)
+			return response.InternalServerError(c, err)
 		}
 	}
 
 	return response.Show(c, user)
 }
 
+// UserStore func create user.
+// @Description Create user.
+// @Summary Create user
+// @Tags User
+// @Accept multipart/form-data
+// @Produce json
+// @Param name formData string true "Name"
+// @Param username formData string true "Username"
+// @Param email formData string true "Email"
+// @Param password formData string true "Password" format(password)
+// @Success 200 {object} response.UserResponse
+// @Failure 400,401,403 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/user [post]
 func UserStore(c *fiber.Ctx) error {
 	user := &model.StoreUser{}
 
@@ -58,6 +95,21 @@ func UserStore(c *fiber.Ctx) error {
 	return response.Store(c, res)
 }
 
+// UserUpdate func update user.
+// @Description Update user.
+// @Summary Update user
+// @Tags User
+// @Accept multipart/form-data
+// @Produce json
+// @Param id path string true "User ID"
+// @Param name formData string true "Name"
+// @Param username formData string true "Username"
+// @Param email formData string true "Email"
+// @Param password formData string true "Password" format(password)
+// @Success 200 {object} response.UserResponse
+// @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/user/{id} [put]
 func UserUpdate(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
@@ -71,12 +123,27 @@ func UserUpdate(c *fiber.Ctx) error {
 	res, err := repository.Update(ID, user)
 
 	if err != nil {
-		return response.InternalServerError(c, err)
+		if err == sql.ErrNoRows {
+			return response.NotFound(c, err)
+		} else {
+			return response.InternalServerError(c, err)
+		}
 	}
 
 	return response.Update(c, res)
 }
 
+// UserDestroy func delete user.
+// @Description Delete user.
+// @Summary Delete user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} response.UserResponse
+// @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/user/{id} [delete]
 func UserDestroy(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
@@ -84,7 +151,11 @@ func UserDestroy(c *fiber.Ctx) error {
 	res, err := repository.Destroy(ID)
 
 	if err != nil {
-		return response.InternalServerError(c, err)
+		if err == sql.ErrNoRows {
+			return response.NotFound(c, err)
+		} else {
+			return response.InternalServerError(c, err)
+		}
 	}
 
 	return response.Destroy(c, res)

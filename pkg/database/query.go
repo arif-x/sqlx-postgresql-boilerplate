@@ -2,7 +2,7 @@ package database
 
 import "fmt"
 
-func Search(columns []string, search string) string {
+func Search(columns []string, search string, deleted_at string) string {
 	conditions := ""
 	if search != "" {
 		conditions = "WHERE"
@@ -13,6 +13,9 @@ func Search(columns []string, search string) string {
 				conditions += fmt.Sprintf(" %s LIKE '%s' OR ", columns[i], "%"+search+"%")
 			}
 		}
+		conditions += fmt.Sprintf(" AND %s IS NULL", deleted_at)
+	} else {
+		conditions += fmt.Sprintf(" WHERE %s IS NULL", deleted_at)
 	}
 
 	return conditions

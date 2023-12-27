@@ -11,6 +11,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// PostCategoryIndex func gets all post category.
+// @Description Get all post category.
+// @Summary Get all post category
+// @Tags Post Category
+// @Accept json
+// @Produce json
+// @Param page query integer false "Page no"
+// @Param page_size query integer false "records per page"
+// @Success 200 {object} response.PostCategoriesResponse
+// @Failure 400,401,403 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/post-category [get]
 func PostCategoryIndex(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
 	repository := repo.NewPostCategoryRepo(database.GetDB())
@@ -24,6 +36,17 @@ func PostCategoryIndex(c *fiber.Ctx) error {
 	return response.Index(c, page, limit, count, post_categories)
 }
 
+// PostCategoryShow func gets single post category.
+// @Description Get single post category.
+// @Summary Get single post category
+// @Tags Post Category
+// @Accept json
+// @Produce json
+// @Param id path string true "Post Category ID"
+// @Success 200 {object} response.PostCategoryResponse
+// @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/post-category/{id} [get]
 func PostCategoryShow(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
@@ -41,6 +64,17 @@ func PostCategoryShow(c *fiber.Ctx) error {
 	return response.Show(c, post_category)
 }
 
+// PostCategoryStore func create post category.
+// @Description Create post category.
+// @Summary Create post category
+// @Tags Post Category
+// @Accept multipart/form-data
+// @Produce json
+// @Param name formData string true "Name"
+// @Success 200 {object} response.PostCategoryResponse
+// @Failure 400,401,403 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/post-category [post]
 func PostCategoryStore(c *fiber.Ctx) error {
 	post_category := &model.StorePostCategory{}
 
@@ -58,6 +92,18 @@ func PostCategoryStore(c *fiber.Ctx) error {
 	return response.Store(c, res)
 }
 
+// PostCategoryUpdate func update post category.
+// @Description Update post category.
+// @Summary Update post category
+// @Tags Post Category
+// @Accept multipart/form-data
+// @Produce json
+// @Param id path string true "Post Category ID"
+// @Param name formData string true "Name"
+// @Success 200 {object} response.PostCategoryResponse
+// @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/post-category/{id} [put]
 func PostCategoryUpdate(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
@@ -77,6 +123,17 @@ func PostCategoryUpdate(c *fiber.Ctx) error {
 	return response.Update(c, res)
 }
 
+// PostCategoryDestroy func delete post category.
+// @Description Delete post category.
+// @Summary Delete post category
+// @Tags Post Category
+// @Accept json
+// @Produce json
+// @Param id path string true "Post Category ID"
+// @Success 200 {object} response.PostCategoryResponse
+// @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
+// @Security ApiKeyAuth
+// @Router /api/v1/dashboard/post-category/{id} [delete]
 func PostCategoryDestroy(c *fiber.Ctx) error {
 	ID := c.Params("id")
 

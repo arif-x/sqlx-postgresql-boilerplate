@@ -29,9 +29,9 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
     posts.created_at,
     posts.updated_at,
 	CASE 
-    	WHEN users.id IS NULL THEN null
+    	WHEN users.uuid IS NULL THEN null
     	ELSE json_build_object(
-        	'id', users.id,
+        	'uuid', users.uuid,
         	'name', users.name,
         	'username', users.username,
         	'email', users.email,
@@ -40,16 +40,16 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
     	)
 	END AS user,
 	CASE 
-    	WHEN post_categories.id IS NULL THEN null
+    	WHEN post_categories.uuid IS NULL THEN null
 		ELSE json_build_object(
-        	'id', post_categories.id,
+        	'uuid', post_categories.uuid,
         	'name', post_categories.name,
         	'created_at', post_categories.created_at,
         	'updated_at', post_categories.updated_at
 		)
 	END AS post_category
 	`
-	_conditions := database.Search([]string{"title", "content", "users.name", "post_categories.name"}, search)
+	_conditions := database.Search([]string{"title", "content", "users.name", "post_categories.name"}, search, "posts.deleted_at")
 	_order := database.OrderBy("posts.id", sort)
 	_limit := database.Limit(limit, offset)
 
@@ -137,7 +137,7 @@ func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, sear
             	FROM posts
 	            LEFT JOIN users ON users.uuid = posts.user_uuid
 	            LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	            WHERE posts.post_category_uuid = $1
+	            WHERE posts.post_category_uuid = $1 AND posts.deleted_at IS NULL 
 	            %s
             ) posts
         ), '[]'
@@ -214,7 +214,7 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
             	FROM posts
 	            LEFT JOIN users ON users.uuid = posts.user_uuid
 	            LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid 
-	            WHERE posts.user_uuid = $1
+	            WHERE posts.user_uuid = $1 AND posts.deleted_at IS NULL 
 	            %s
             ) posts
         ), '[]'
@@ -280,7 +280,7 @@ func (repo *PostRepo) Show(UUID string) (model.Post, error) {
 		)
 	END AS post_category
 	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	WHERE posts.uuid = $1 LIMIT 1
+	WHERE posts.uuid = $1 LIMIT 1 AND posts.deleted_at IS NULL 
 	`
 
 	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(

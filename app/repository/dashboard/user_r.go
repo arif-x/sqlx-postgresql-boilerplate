@@ -24,7 +24,7 @@ type UserRepo struct {
 
 func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.User, int, error) {
 	_select := "uuid, name, email, username, created_at, updated_at, deleted_at"
-	_conditions := database.Search([]string{"name", "email", "username"}, search)
+	_conditions := database.Search([]string{"name", "email", "username"}, search, "users.deleted_at")
 	_order := database.OrderBy(sort_by, sort)
 	_limit := database.Limit(limit, offset)
 
@@ -68,7 +68,7 @@ func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by strin
 
 func (repo *UserRepo) Show(ID string) (model.UserShow, error) {
 	var user model.UserShow
-	query := "SELECT uuid, name, email, username, created_at, updated_at, deleted_at FROM users WHERE id = $1 LIMIT 1"
+	query := "SELECT uuid, name, email, username, created_at, updated_at, deleted_at FROM users WHERE uuid = $1 AND users.deleted_at IS NULL LIMIT 1"
 	err := repo.db.QueryRowContext(context.Background(), query, ID).Scan(
 		&user.UUID,
 		&user.Name,

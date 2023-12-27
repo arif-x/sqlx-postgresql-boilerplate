@@ -40,7 +40,7 @@ func (repo *AuthRepo) Login(Username string) (model.User, error) {
 
 func (repo *AuthRepo) Register(request *model.Register) (model.User, error) {
 	query := `INSERT INTO "users" (uuid, name, username, email, password, created_at) VALUES($1, $2, $3, $4, $5, $6) 
-	RETURNING id, name, email, username, password, created_at, updated_at, deleted_at`
+	RETURNING uuid, name, email, username, password, created_at, updated_at, deleted_at`
 	var user model.User
 	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, request.Username, request.Email, request.Password, time.Now()).Scan(
 		&user.UUID,

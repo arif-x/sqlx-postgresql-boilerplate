@@ -24,7 +24,7 @@ type PostCategoryRepo struct {
 
 func (repo *PostCategoryRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.PostCategory, int, error) {
 	_select := "uuid, name, created_at, updated_at, deleted_at"
-	_conditions := database.Search([]string{"name"}, search)
+	_conditions := database.Search([]string{"name"}, search, "post_categories.deleted_at")
 	_order := database.OrderBy(sort_by, sort)
 	_limit := database.Limit(limit, offset)
 
@@ -66,7 +66,7 @@ func (repo *PostCategoryRepo) Index(limit int, offset uint, search string, sort_
 
 func (repo *PostCategoryRepo) Show(UUID string) (model.PostCategoryShow, error) {
 	var postCategory model.PostCategoryShow
-	query := "SELECT uuid, name, created_at, updated_at, deleted_at FROM post_categories WHERE uuid = $1 LIMIT 1"
+	query := "SELECT uuid, name, created_at, updated_at, deleted_at FROM post_categories WHERE uuid = $1 AND post_categories.deleted_at IS NULL LIMIT 1"
 	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
 		&postCategory.UUID,
 		&postCategory.Name,

@@ -18,6 +18,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Register method for new user registration.
+// @Description new user registration.
+// @Summary new user registration.
+// @Tags Auth
+// @Accept multipart/form-data
+// @Produce json
+// @Param name formData string true "Name"
+// @Param username formData string true "Username"
+// @Param email formData string true "Email"
+// @Param password formData string true "Password" format(password)
+// @Failure 400,401,403,500 {object} response.ErrorResponse "Error"
+// @Success 200 {object} response.AuthResponse
+// @Router /api/v1/auth/register [post]
 func Register(c *fiber.Ctx) error {
 	register := &model.Register{}
 
@@ -36,6 +49,7 @@ func Register(c *fiber.Ctx) error {
 	user, err := repository.Register(register)
 
 	if err != nil {
+		fmt.Print(err)
 		return response.InternalServerError(c, err)
 	}
 
@@ -51,6 +65,17 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
+// Register method for user login.
+// @Description user login.
+// @Summary user login.
+// @Tags Auth
+// @Accept multipart/form-data
+// @Produce json
+// @Param username formData string true "Username Or Email"
+// @Param password formData string true "Password" format(password)
+// @Failure 400,401,403,500 {object} response.ErrorResponse "Error"
+// @Success 200 {object} response.AuthResponse
+// @Router /api/v1/auth/login [post]
 func Login(c *fiber.Ctx) error {
 	login := &model.Login{}
 

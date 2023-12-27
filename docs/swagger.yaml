@@ -1,0 +1,1110 @@
+basePath: /
+definitions:
+  dashboard.Post:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      post_category:
+        items:
+          type: integer
+        type: array
+      post_category_uuid:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        items:
+          type: integer
+        type: array
+      user_uuid:
+        type: string
+      uuid:
+        type: string
+    type: object
+  dashboard.PostCategory:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
+  dashboard.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+      uuid:
+        type: string
+    type: object
+  public.Post:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      post_category:
+        items:
+          type: integer
+        type: array
+      post_category_uuid:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        items:
+          type: integer
+        type: array
+      user_uuid:
+        type: string
+      uuid:
+        type: string
+    type: object
+  public.PostCategoryWithPost:
+    properties:
+      created_at:
+        type: string
+      name:
+        type: string
+      post:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
+  public.UserWithPost:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      post:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: string
+      username:
+        type: string
+      uuid:
+        type: string
+    type: object
+  response.AuthResponse:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  response.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  response.PostCategoriesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dashboard.PostCategory'
+        type: array
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
+    type: object
+  response.PostCategoryResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dashboard.PostCategory'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  response.PostResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dashboard.Post'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  response.PublicPostsByCategoryResponse:
+    properties:
+      data:
+        $ref: '#/definitions/public.PostCategoryWithPost'
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
+    type: object
+  response.PublicPostsByUserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/public.UserWithPost'
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
+    type: object
+  response.PublicPostsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/public.Post'
+        type: array
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
+    type: object
+  response.UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dashboard.User'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  response.UsersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dashboard.User'
+        type: array
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: SQLX GoFiber Boilerplate documentation.
+  title: SQLX GoFiber Boilerplate API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - multipart/form-data
+      description: user login.
+      parameters:
+      - description: Username Or Email
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Password
+        format: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: user login.
+      tags:
+      - Auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - multipart/form-data
+      description: new user registration.
+      parameters:
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: Password
+        format: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: new user registration.
+      tags:
+      - Auth
+  /api/v1/dashboard/post:
+    get:
+      consumes:
+      - application/json
+      description: Get all post.
+      parameters:
+      - description: Page no
+        in: query
+        name: page
+        type: integer
+      - description: records per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all post
+      tags:
+      - Post
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create post.
+      parameters:
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Content
+        in: formData
+        name: content
+        required: true
+        type: string
+      - description: User UUID
+        in: formData
+        name: user_uuid
+        required: true
+        type: string
+      - description: Post Category UUID
+        in: formData
+        name: post_category_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create post
+      tags:
+      - Post
+  /api/v1/dashboard/post-category:
+    get:
+      consumes:
+      - application/json
+      description: Get all post category.
+      parameters:
+      - description: Page no
+        in: query
+        name: page
+        type: integer
+      - description: records per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoriesResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all post category
+      tags:
+      - Post Category
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create post category.
+      parameters:
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoryResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create post category
+      tags:
+      - Post Category
+  /api/v1/dashboard/post-category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete post category.
+      parameters:
+      - description: Post Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoryResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete post category
+      tags:
+      - Post Category
+    get:
+      consumes:
+      - application/json
+      description: Get single post category.
+      parameters:
+      - description: Post Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoryResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get single post category
+      tags:
+      - Post Category
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update post category.
+      parameters:
+      - description: Post Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoryResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update post category
+      tags:
+      - Post Category
+  /api/v1/dashboard/post/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete post.
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete post
+      tags:
+      - Post
+    get:
+      consumes:
+      - application/json
+      description: Get single post.
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get single post
+      tags:
+      - Post
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update post.
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Content
+        in: formData
+        name: content
+        required: true
+        type: string
+      - description: User UUID
+        in: formData
+        name: user_uuid
+        required: true
+        type: string
+      - description: Post Category UUID
+        in: formData
+        name: post_category_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update post
+      tags:
+      - Post
+  /api/v1/dashboard/user:
+    get:
+      consumes:
+      - application/json
+      description: Get all user.
+      parameters:
+      - description: Page no
+        in: query
+        name: page
+        type: integer
+      - description: records per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UsersResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all user
+      tags:
+      - User
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create user.
+      parameters:
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: Password
+        format: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create user
+      tags:
+      - User
+  /api/v1/dashboard/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get single user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get single user
+      tags:
+      - User
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: Password
+        format: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user
+      tags:
+      - User
+  /api/v1/public/post:
+    get:
+      consumes:
+      - application/json
+      description: Get all post.
+      parameters:
+      - description: Page no
+        in: query
+        name: page
+        type: integer
+      - description: records per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PublicPostsResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get all post
+      tags:
+      - Public Post
+  /api/v1/public/post/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get single post.
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get single post
+      tags:
+      - Public Post
+  /api/v1/public/post/category/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get post by category.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PublicPostsByCategoryResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get post by category
+      tags:
+      - Public Post
+  /api/v1/public/post/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get post by user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PublicPostsByUserResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get post by user
+      tags:
+      - Public Post
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

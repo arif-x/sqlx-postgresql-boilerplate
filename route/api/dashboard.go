@@ -8,7 +8,7 @@ import (
 func Dashboard(a *fiber.App) {
 	// user := a.Group("/api/v1/users", middleware.JWTProtected())
 
-	dasboard := a.Group("/api/v1")
+	dasboard := a.Group("/api/v1/dashboard")
 
 	user := dasboard.Group("/user")
 	user.Get("/", controllers.UserIndex)

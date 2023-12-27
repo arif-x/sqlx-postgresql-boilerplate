@@ -22,8 +22,6 @@ func (db *DB) connect(cfg *config.DB) (err error) {
 		cfg.Name,
 	)
 
-	fmt.Print(dbURI)
-
 	db.DB, err = sqlx.Open("postgres", dbURI)
 	if err != nil {
 		return err

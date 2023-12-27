@@ -3,12 +3,15 @@ package database
 import "fmt"
 
 func Search(columns []string, search string) string {
-	conditions := "WHERE"
-	for i := 0; i < len(columns); i++ {
-		if i == (len(columns) - 1) {
-			conditions += fmt.Sprintf(" %s LIKE '%s' ", columns[i], "%"+search+"%")
-		} else {
-			conditions += fmt.Sprintf(" %s LIKE '%s' OR ", columns[i], "%"+search+"%")
+	conditions := ""
+	if search != "" {
+		conditions = "WHERE"
+		for i := 0; i < len(columns); i++ {
+			if i == (len(columns) - 1) {
+				conditions += fmt.Sprintf(" %s LIKE '%s' ", columns[i], "%"+search+"%")
+			} else {
+				conditions += fmt.Sprintf(" %s LIKE '%s' OR ", columns[i], "%"+search+"%")
+			}
 		}
 	}
 

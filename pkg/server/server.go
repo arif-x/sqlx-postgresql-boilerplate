@@ -36,6 +36,7 @@ func Serve() {
 	// Routes.
 	route.Auth(app)
 	route.Dashboard(app)
+	route.Public(app)
 
 	// signal channel to capture system calls
 	sigCh := make(chan os.Signal, 1)

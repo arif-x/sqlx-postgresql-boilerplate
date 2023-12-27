@@ -4,10 +4,11 @@ Todo List
 - [x]  Fix CRUD Sample
 - [x]  Dynamic List (Get paginate, search, sort by, and sort)
 - [x]  One-to-one & one-to-many/many-to-many relational with native Postgre Query
-    - [x]  (One-to-one) Example is in app/repository/public/post_r/PostByUser
-    - [x]  (One-to-many/Many-to-many) Example is in app/repository/public/post_r/PostSingle
+    - [x]  (One-to-one) Example is in app/repository/public/post_r/Index
+    - [x]  (One-to-many/Many-to-many) Example is in app/repository/public/post_r/Show
 - [x]  Auth
 - [ ]  Role & Permission
+- [ ]  Implement Swagger
 
 # Why no ORM?
 - Slow

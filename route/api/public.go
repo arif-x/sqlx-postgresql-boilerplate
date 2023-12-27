@@ -11,4 +11,5 @@ func Public(a *fiber.App) {
 	public.Get("/post", controllers.PostIndex)
 	public.Get("/post/category/:id", controllers.PostCategoryPost)
 	public.Get("/post/user/:id", controllers.UserPost)
+	public.Get("/post/:id", controllers.PostShow)
 }

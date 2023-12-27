@@ -32,9 +32,9 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
     posts.created_at,
     posts.updated_at,
 	CASE 
-    	WHEN users.id IS NULL THEN null
+    	WHEN users.uuid IS NULL THEN null
     	ELSE json_build_object(
-        	'id', users.id,
+        	'uuid', users.uuid,
         	'name', users.name,
         	'username', users.username,
         	'email', users.email,
@@ -45,7 +45,7 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	CASE 
     	WHEN post_categories.id IS NULL THEN null
 		ELSE json_build_object(
-        	'id', post_categories.id,
+        	'uuid', post_categories.uuid,
         	'name', post_categories.name,
         	'created_at', post_categories.created_at,
         	'updated_at', post_categories.updated_at
@@ -109,9 +109,9 @@ func (repo *PostRepo) Show(UUID string) (model.PostShow, error) {
 	posts.created_at,
 	posts.updated_at,
 	CASE 
-    	WHEN users.id IS NULL THEN null
+    	WHEN users.uuid IS NULL THEN null
     	ELSE json_build_object(
-        	'id', users.id,
+        	'uuid', users.uuid,
         	'name', users.name,
         	'username', users.username,
         	'email', users.email,
@@ -120,9 +120,9 @@ func (repo *PostRepo) Show(UUID string) (model.PostShow, error) {
     	)
 	END AS user,
 	CASE 
-    	WHEN post_categories.id IS NULL THEN null
+    	WHEN post_categories.uuid IS NULL THEN null
 		ELSE json_build_object(
-        	'id', post_categories.id,
+        	'uuid', post_categories.uuid,
         	'name', post_categories.name,
         	'created_at', post_categories.created_at,
         	'updated_at', post_categories.updated_at

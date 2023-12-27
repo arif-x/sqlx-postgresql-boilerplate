@@ -12,6 +12,7 @@ type PostRepository interface {
 	Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Post, int, error)
 	PostCategoryPost(uuid string, limit int, offset uint, search string, sort_by string, sort string) (model.PostCategoryWithPost, int, error)
 	UserPost(uuid string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error)
+	Show(UUID string) (model.Post, error)
 }
 
 type PostRepo struct {
@@ -110,7 +111,7 @@ func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, sear
                     'user', CASE 
                         WHEN user_uuid_u IS NULL THEN null
                             ELSE json_build_object(
-                                    'id', user_uuid_u,
+                                    'uuid', user_uuid_u,
                                     'name', user_name,
                                     'username', user_username,
                                     'email', user_email,
@@ -121,7 +122,7 @@ func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, sear
                     'post_category', CASE 
                         WHEN post_category_uuid_u IS NULL THEN null
                             ELSE json_build_object(
-                                    'id', post_category_uuid_u,
+                                    'uuid', post_category_uuid_u,
                                     'name', post_category_name,
                                     'created_at', post_category_created_at,
                                     'updated_at', post_category_updated_at
@@ -187,7 +188,7 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
                     'user', CASE 
                         WHEN user_uuid_u IS NULL THEN null
                             ELSE json_build_object(
-                                    'id', user_uuid_u,
+                                    'uuid', user_uuid_u,
                                     'name', user_name,
                                     'username', user_username,
                                     'email', user_email,
@@ -198,7 +199,7 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
                     'post_category', CASE 
                         WHEN post_category_uuid_u IS NULL THEN null
                             ELSE json_build_object(
-                                    'id', post_category_uuid_u,
+                                    'uuid', post_category_uuid_u,
                                     'name', post_category_name,
                                     'created_at', post_category_created_at,
                                     'updated_at', post_category_updated_at
@@ -246,6 +247,57 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
 
 	return items, count, nil
 }
+
+func (repo *PostRepo) Show(UUID string) (model.Post, error) {
+	var post model.Post
+	query := `
+	SELECT 
+	posts.uuid,
+	user_uuid,
+	post_category_uuid,
+	title,
+	content,
+	posts.created_at,
+	posts.updated_at,
+	CASE 
+    	WHEN users.uuid IS NULL THEN null
+    	ELSE json_build_object(
+        	'uuid', users.uuid,
+        	'name', users.name,
+        	'username', users.username,
+        	'email', users.email,
+        	'created_at', users.created_at,
+        	'updated_at', users.updated_at
+    	)
+	END AS user,
+	CASE 
+    	WHEN post_categories.uuid IS NULL THEN null
+		ELSE json_build_object(
+        	'uuid', post_categories.uuid,
+        	'name', post_categories.name,
+        	'created_at', post_categories.created_at,
+        	'updated_at', post_categories.updated_at
+		)
+	END AS post_category
+	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
+	WHERE posts.uuid = $1 LIMIT 1
+	`
+
+	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
+		&post.UUID,
+		&post.PostCategoryUUID,
+		&post.UserUUID,
+		&post.Title,
+		&post.Content,
+		&post.CreatedAt,
+		&post.UpdatedAt,
+		&post.User,
+		&post.PostCategory,
+	)
+
+	return post, err
+}
+
 func NewPostRepo(db *database.DB) PostRepository {
 	return &PostRepo{db}
 }

@@ -39,7 +39,7 @@ func Register(c *fiber.Ctx) error {
 		return response.InternalServerError(c, err)
 	}
 
-	token, err := GenerateNewAccessToken(user.ID, user.Username, user.Email, user.Name)
+	token, err := GenerateNewAccessToken(user.UUID, user.Username, user.Email, user.Name)
 	if err != nil {
 		return response.InternalServerError(c, errors.New("Internal Error"))
 	}
@@ -55,7 +55,6 @@ func Login(c *fiber.Ctx) error {
 	login := &model.Login{}
 
 	if err := c.BodyParser(login); err != nil {
-		fmt.Print(err)
 		return response.BadRequest(c, err)
 	}
 
@@ -75,7 +74,7 @@ func Login(c *fiber.Ctx) error {
 		return response.InternalServerError(c, errors.New("Incorrect password"))
 	}
 
-	token, err := GenerateNewAccessToken(user.ID, user.Username, user.Email, user.Name)
+	token, err := GenerateNewAccessToken(user.UUID, user.Username, user.Email, user.Name)
 	if err != nil {
 		return response.InternalServerError(c, errors.New("Internal Error"))
 	}

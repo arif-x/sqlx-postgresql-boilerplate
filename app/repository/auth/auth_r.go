@@ -20,10 +20,10 @@ type AuthRepo struct {
 
 func (repo *AuthRepo) Login(Username string) (model.User, error) {
 	var user model.User
-	query := `SELECT id, name, email, username, password, created_at, updated_at, deleted_at FROM users 
+	query := `SELECT uuid, name, email, username, password, created_at, updated_at, deleted_at FROM users 
 	WHERE username = $1 OR email = $1 AND deleted_at IS NULL LIMIT 1`
 	err := repo.db.QueryRowContext(context.Background(), query, Username).Scan(
-		&user.ID,
+		&user.UUID,
 		&user.Name,
 		&user.Email,
 		&user.Username,
@@ -39,11 +39,11 @@ func (repo *AuthRepo) Login(Username string) (model.User, error) {
 }
 
 func (repo *AuthRepo) Register(request *model.Register) (model.User, error) {
-	query := `INSERT INTO "users" (id, name, username, email, password, created_at) VALUES($1, $2, $3, $4, $5, $6) 
+	query := `INSERT INTO "users" (uuid, name, username, email, password, created_at) VALUES($1, $2, $3, $4, $5, $6) 
 	RETURNING id, name, email, username, password, created_at, updated_at, deleted_at`
 	var user model.User
 	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, request.Username, request.Email, request.Password, time.Now()).Scan(
-		&user.ID,
+		&user.UUID,
 		&user.Name,
 		&user.Email,
 		&user.Username,

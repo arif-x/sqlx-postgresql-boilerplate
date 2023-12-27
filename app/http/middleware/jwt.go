@@ -5,15 +5,12 @@ import (
 	"time"
 
 	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
-	"github.com/form3tech-oss/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"
+	JWTTokenAuthed "github.com/golang-jwt/jwt/v4"
 )
 
-// JWTProtected func for specify route group with JWT authentication.
-// See: https://github.com/gofiber/jwt
 func JWTProtected() func(*fiber.Ctx) error {
-	// Create config for JWT authentication middleware.
 	jwtwareConfig := jwtware.Config{
 		SigningKey:     []byte(config.AppCfg().JWTSecretKey),
 		ContextKey:     "user", // used in private route
@@ -25,26 +22,25 @@ func JWTProtected() func(*fiber.Ctx) error {
 }
 
 func verifyTokenExpiration(c *fiber.Ctx) error {
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
+	user := c.Locals("user").(*JWTTokenAuthed.Token)
+	claims := user.Claims.(JWTTokenAuthed.MapClaims)
 	expires := int64(claims["exp"].(float64))
 	if time.Now().Unix() > expires {
-		return jwtError(c, errors.New("token expired"))
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  false,
+			"message": errors.New("token expired"),
+		})
 	}
-
 	return c.Next()
 }
 
 func jwtError(c *fiber.Ctx, err error) error {
-	// Return status 401 and failed authentication error.
 	if err.Error() == "Missing or malformed JWT" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  false,
 			"message": err.Error(),
 		})
 	}
-
-	// Return status 401 and failed authentication error.
 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 		"status":  false,
 		"message": err.Error(),

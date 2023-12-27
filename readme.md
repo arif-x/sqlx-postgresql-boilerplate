@@ -3,10 +3,10 @@ Todo List
 - [x]  Code Structure
 - [x]  Fix CRUD Sample
 - [x]  Dynamic List (Get paginate, search, sort by, and sort)
-- [ ]  One-to-one & one-to-many/many-to-many relational with native Postgre Query
-    - [ ]  (One-to-one) Example is in app/repository/public/post_r/PostByUser
-    - [ ]  (One-to-many/Many-to-many) Example is in app/repository/public/post_r/PostSingle
-- [ ]  Auth
+- [x]  One-to-one & one-to-many/many-to-many relational with native Postgre Query
+    - [x]  (One-to-one) Example is in app/repository/public/post_r/PostByUser
+    - [x]  (One-to-many/Many-to-many) Example is in app/repository/public/post_r/PostSingle
+- [x]  Auth
 - [ ]  Role & Permission
 
 # Why no ORM?

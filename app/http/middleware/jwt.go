@@ -38,13 +38,15 @@ func verifyTokenExpiration(c *fiber.Ctx) error {
 func jwtError(c *fiber.Ctx, err error) error {
 	// Return status 401 and failed authentication error.
 	if err.Error() == "Missing or malformed JWT" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"msg": err.Error(),
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Error(),
 		})
 	}
 
 	// Return status 401 and failed authentication error.
 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-		"msg": err.Error(),
+		"status":  false,
+		"message": err.Error(),
 	})
 }

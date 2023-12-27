@@ -2,13 +2,14 @@ package api
 
 import (
 	controllers "github.com/arif-x/sqlx-gofiber-boilerplate/app/http/controller/dashboard"
+	"github.com/arif-x/sqlx-gofiber-boilerplate/app/http/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Dashboard(a *fiber.App) {
 	// user := a.Group("/api/v1/users", middleware.JWTProtected())
 
-	dasboard := a.Group("/api/v1/dashboard")
+	dasboard := a.Group("/api/v1/dashboard", middleware.JWTProtected())
 
 	user := dasboard.Group("/user")
 	user.Get("/", controllers.UserIndex)

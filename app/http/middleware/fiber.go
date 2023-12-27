@@ -14,16 +14,3 @@ func FiberMiddleware(a *fiber.App) {
 		logger.New(),
 	)
 }
-
-// func IsAdmin(c *fiber.Ctx) error {
-// 	user := c.Locals("user").(*jwt.Token)
-// 	claims := user.Claims.(jwt.MapClaims)
-// 	isAdmin, ok := claims["admin"]
-// 	if !ok || !isAdmin.(bool) {
-// 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-// 			"msg": "Forbidden",
-// 		})
-// 	}
-
-// 	return c.Next()
-// }

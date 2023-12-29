@@ -30,13 +30,13 @@ func RoleIndex(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
 	repository := repo.NewRoleRepo(database.GetDB())
 
-	post_categories, count, err := repository.Index(limit, uint(limit*(page-1)), search, sort_by, sort)
+	role, count, err := repository.Index(limit, uint(limit*(page-1)), search, sort_by, sort)
 
 	if err != nil {
 		return response.InternalServerError(c, err)
 	}
 
-	return response.Index(c, page, limit, count, post_categories)
+	return response.Index(c, page, limit, count, role)
 }
 
 // RoleShow func gets single role.
@@ -54,17 +54,17 @@ func RoleShow(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
 	repository := repo.NewRoleRepo(database.GetDB())
-	post_category, err := repository.Show(ID)
+	role, err := repository.Show(ID)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return response.NotFound(c, err)
 		} else {
-			response.InternalServerError(c, err)
+			return response.InternalServerError(c, err)
 		}
 	}
 
-	return response.Show(c, post_category)
+	return response.Show(c, role)
 }
 
 // RoleStore func create role.
@@ -73,20 +73,20 @@ func RoleShow(c *fiber.Ctx) error {
 // @Tags Role
 // @Accept multipart/form-data
 // @Produce json
-// @Param name formData string true "Name" default(Category Name)
+// @Param name formData string true "Name" default(Role Name)
 // @Success 200 {object} response.RoleResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
 // @Router /api/v1/dashboard/role [post]
 func RoleStore(c *fiber.Ctx) error {
-	post_category := &model.StoreRole{}
+	role := &model.StoreRole{}
 
-	if err := c.BodyParser(post_category); err != nil {
+	if err := c.BodyParser(role); err != nil {
 		return response.BadRequest(c, err)
 	}
 
 	repository := repo.NewRoleRepo(database.GetDB())
-	res, err := repository.Store(post_category)
+	res, err := repository.Store(role)
 
 	if err != nil {
 		return response.InternalServerError(c, err)
@@ -102,7 +102,7 @@ func RoleStore(c *fiber.Ctx) error {
 // @Accept multipart/form-data
 // @Produce json
 // @Param id path string true "Role ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
-// @Param name formData string true "Name" default(Category Name Update)
+// @Param name formData string true "Name" default(Role Name Update)
 // @Success 200 {object} response.RoleResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -110,14 +110,14 @@ func RoleStore(c *fiber.Ctx) error {
 func RoleUpdate(c *fiber.Ctx) error {
 	ID := c.Params("id")
 
-	post_category := &model.UpdateRole{}
+	role := &model.UpdateRole{}
 
-	if err := c.BodyParser(post_category); err != nil {
+	if err := c.BodyParser(role); err != nil {
 		return response.BadRequest(c, err)
 	}
 
 	repository := repo.NewRoleRepo(database.GetDB())
-	res, err := repository.Update(ID, post_category)
+	res, err := repository.Update(ID, role)
 
 	if err != nil {
 		return response.InternalServerError(c, err)

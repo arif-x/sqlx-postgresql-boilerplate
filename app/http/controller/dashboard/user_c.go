@@ -77,6 +77,7 @@ func UserShow(c *fiber.Ctx) error {
 // @Param username formData string true "Username" default(username)
 // @Param email formData string true "Email" default(email@gmail.com)
 // @Param password formData string true "Password" format(password)
+// @Param role_uuid path string true "Role ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.UserResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -109,6 +110,7 @@ func UserStore(c *fiber.Ctx) error {
 // @Param username formData string true "Username" default(usernameupdate)
 // @Param email formData string true "Email" default(emailupdate@gmail.com)
 // @Param password formData string true "Password" format(password)
+// @Param role_uuid path string true "Role ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.UserResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth

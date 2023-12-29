@@ -262,7 +262,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "Category Name",
+                        "default": "Permission Name",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -386,7 +386,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "Category Name Update",
+                        "default": "Permission Name Update",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -1301,7 +1301,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "Category Name",
+                        "default": "Role Name",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -1425,7 +1425,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "Category Name Update",
+                        "default": "Role Name Update",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -1497,6 +1497,139 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.RoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/sync-permission/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all permissions that role has.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sync Permission"
+                ],
+                "summary": "Get all permissions that role has",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SyncPermissionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update permissions per role.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sync Permission"
+                ],
+                "summary": "update permissions per role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "permission_uuid",
+                        "name": "permission_uuid",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SyncPermissionResponse"
                         }
                     },
                     "400": {
@@ -1662,6 +1795,14 @@ const docTemplate = `{
                         "name": "password",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Role ID",
+                        "name": "role_uuid",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1809,6 +1950,14 @@ const docTemplate = `{
                         "description": "Password",
                         "name": "password",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Role ID",
+                        "name": "role_uuid",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -2499,6 +2648,20 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/dashboard.Role"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "response.SyncPermissionResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dashboard.Permission"
                 },
                 "message": {
                     "type": "string"

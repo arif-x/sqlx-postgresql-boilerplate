@@ -123,3 +123,9 @@ type PublicPostsByUserResponse struct {
 	Page    int                 `json:"page"`
 	Total   int                 `json:"total"`
 }
+
+type SyncPermissionResponse struct {
+	Status  bool                 `json:"status"`
+	Message string               `json:"message"`
+	Data    dashboard.Permission `json:"data"`
+}

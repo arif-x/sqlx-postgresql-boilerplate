@@ -43,4 +43,8 @@ func Dashboard(a *fiber.App) {
 	permission.Post("/", middleware.Permission("permission-store"), controllers.PermissionStore)
 	permission.Put("/:id", middleware.Permission("permission-update"), controllers.PermissionUpdate)
 	permission.Delete("/:id", middleware.Permission("permission-destroy"), controllers.PermissionDestroy)
+
+	sync_permission := dashboard.Group("/sync-permission")
+	sync_permission.Get("/:id", middleware.Permission("permission-index"), controllers.SyncPermissionShow)
+	sync_permission.Put("/:id", middleware.Permission("permission-index"), controllers.SyncPermissionUpdate)
 }

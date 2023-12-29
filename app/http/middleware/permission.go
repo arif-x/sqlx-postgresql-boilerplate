@@ -13,7 +13,7 @@ func Permission(Permission string) func(*fiber.Ctx) error {
 
 		permissionsSlice, ok := permissions.([]interface{})
 		if !ok {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"status":  false,
 				"message": "You dont have permission!",
 			})

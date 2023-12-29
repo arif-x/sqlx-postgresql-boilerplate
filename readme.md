@@ -7,7 +7,7 @@ Todo List
     - [x]  (One-to-one) Example is in app/repository/public/post_r/Index
     - [x]  (One-to-many/Many-to-many) Example is in app/repository/public/post_r/Show
 - [x]  Auth
-- [ ]  Role & Permission
+- [x]  Role & Permission
 - [x]  Implement Swagger
 
 # Why no ORM?

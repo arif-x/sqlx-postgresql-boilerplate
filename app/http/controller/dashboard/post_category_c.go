@@ -60,7 +60,7 @@ func PostCategoryShow(c *fiber.Ctx) error {
 		if err == sql.ErrNoRows {
 			return response.NotFound(c, err)
 		} else {
-			response.InternalServerError(c, err)
+			return response.InternalServerError(c, err)
 		}
 	}
 

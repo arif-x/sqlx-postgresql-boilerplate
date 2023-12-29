@@ -23,9 +23,9 @@ type ShowPermission struct {
 }
 
 type StorePermission struct {
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" form:"name"`
 }
 
 type UpdatePermission struct {
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" form:"name"`
 }

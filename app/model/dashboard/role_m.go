@@ -23,9 +23,9 @@ type ShowRole struct {
 }
 
 type StoreRole struct {
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" form:"name"`
 }
 
 type UpdateRole struct {
-	Name string `db:"name" json:"name"`
+	Name string `json:"name" form:"name"`
 }

@@ -178,14 +178,41 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page no",
+                        "description": "Page",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "records per page",
-                        "name": "page_size",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "posts.id",
+                            "title",
+                            "content"
+                        ],
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
                         "in": "query"
                     }
                 ],
@@ -236,6 +263,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Title",
                         "description": "Title",
                         "name": "title",
                         "in": "formData",
@@ -243,6 +271,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Content",
                         "description": "Content",
                         "name": "content",
                         "in": "formData",
@@ -250,6 +279,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
                         "description": "User UUID",
                         "name": "user_uuid",
                         "in": "formData",
@@ -257,6 +287,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Post Category UUID",
                         "name": "post_category_uuid",
                         "in": "formData",
@@ -312,14 +343,40 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page no",
+                        "description": "Page",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "records per page",
-                        "name": "page_size",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "id",
+                            "name"
+                        ],
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
                         "in": "query"
                     }
                 ],
@@ -370,6 +427,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Category Name",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -425,6 +483,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Post Category ID",
                         "name": "id",
                         "in": "path",
@@ -484,6 +543,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Post Category ID",
                         "name": "id",
                         "in": "path",
@@ -491,6 +551,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Category Name Update",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -550,6 +611,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Post Category ID",
                         "name": "id",
                         "in": "path",
@@ -611,6 +673,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "Post ID",
                         "name": "id",
                         "in": "path",
@@ -670,6 +733,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "Post ID",
                         "name": "id",
                         "in": "path",
@@ -677,6 +741,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Title Update",
                         "description": "Title",
                         "name": "title",
                         "in": "formData",
@@ -684,6 +749,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Content Update",
                         "description": "Content",
                         "name": "content",
                         "in": "formData",
@@ -691,6 +757,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
                         "description": "User UUID",
                         "name": "user_uuid",
                         "in": "formData",
@@ -698,6 +765,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Post Category UUID",
                         "name": "post_category_uuid",
                         "in": "formData",
@@ -757,6 +825,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "Post ID",
                         "name": "id",
                         "in": "path",
@@ -818,14 +887,42 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page no",
+                        "description": "Page",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "records per page",
-                        "name": "page_size",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "id",
+                            "name",
+                            "email",
+                            "username"
+                        ],
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
                         "in": "query"
                     }
                 ],
@@ -876,6 +973,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Name",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -883,6 +981,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "username",
                         "description": "Username",
                         "name": "username",
                         "in": "formData",
@@ -890,6 +989,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "email@gmail.com",
                         "description": "Email",
                         "name": "email",
                         "in": "formData",
@@ -953,6 +1053,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -1012,6 +1113,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -1019,6 +1121,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Name Update",
                         "description": "Name",
                         "name": "name",
                         "in": "formData",
@@ -1026,6 +1129,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "usernameupdate",
                         "description": "Username",
                         "name": "username",
                         "in": "formData",
@@ -1033,6 +1137,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "emailupdate@gmail.com",
                         "description": "Email",
                         "name": "email",
                         "in": "formData",
@@ -1100,6 +1205,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -1153,20 +1259,6 @@ const docTemplate = `{
                     "Public Post"
                 ],
                 "summary": "Get all post",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page no",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "records per page",
-                        "name": "page_size",
-                        "in": "query"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1181,6 +1273,12 @@ const docTemplate = `{
                         }
                     },
                     "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
                         "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
@@ -1205,6 +1303,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
@@ -1229,6 +1328,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
                         }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -1249,6 +1354,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -1273,6 +1379,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
                         }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -1293,6 +1405,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
                         "description": "Post ID",
                         "name": "id",
                         "in": "path",
@@ -1313,6 +1426,12 @@ const docTemplate = `{
                         }
                     },
                     "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
                         "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
@@ -1524,7 +1643,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },

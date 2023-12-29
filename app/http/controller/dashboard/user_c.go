@@ -17,8 +17,11 @@ import (
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param page query integer false "Page no"
-// @Param page_size query integer false "records per page"
+// @Param page query integer false "Page"
+// @Param limit query integer false "Limit"
+// @Param search query string false "Search"
+// @Param sort_by query string false "Sort By" Enums(id, name, email, username)
+// @Param sort query string false "Sort" Enums(ASC, DESC)
 // @Success 200 {object} response.UsersResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -42,7 +45,7 @@ func UserIndex(c *fiber.Ctx) error {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path string true "User ID" default(f72cb686-2fc3-4147-8183-f93684780765)
 // @Success 200 {object} response.UserResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -70,9 +73,9 @@ func UserShow(c *fiber.Ctx) error {
 // @Tags User
 // @Accept multipart/form-data
 // @Produce json
-// @Param name formData string true "Name"
-// @Param username formData string true "Username"
-// @Param email formData string true "Email"
+// @Param name formData string true "Name" default(Name)
+// @Param username formData string true "Username" default(username)
+// @Param email formData string true "Email" default(email@gmail.com)
 // @Param password formData string true "Password" format(password)
 // @Success 200 {object} response.UserResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
@@ -101,10 +104,10 @@ func UserStore(c *fiber.Ctx) error {
 // @Tags User
 // @Accept multipart/form-data
 // @Produce json
-// @Param id path string true "User ID"
-// @Param name formData string true "Name"
-// @Param username formData string true "Username"
-// @Param email formData string true "Email"
+// @Param id path string true "User ID" default(f72cb686-2fc3-4147-8183-f93684780765)
+// @Param name formData string true "Name" default(Name Update)
+// @Param username formData string true "Username" default(usernameupdate)
+// @Param email formData string true "Email" default(emailupdate@gmail.com)
 // @Param password formData string true "Password" format(password)
 // @Success 200 {object} response.UserResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
@@ -139,7 +142,7 @@ func UserUpdate(c *fiber.Ctx) error {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path string true "User ID" default(f72cb686-2fc3-4147-8183-f93684780765)
 // @Success 200 {object} response.UserResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth

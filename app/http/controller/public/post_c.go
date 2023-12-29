@@ -16,10 +16,8 @@ import (
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param page query integer false "Page no"
-// @Param page_size query integer false "records per page"
 // @Success 200 {object} response.PublicPostsResponse
-// @Failure 400,403 {object} response.ErrorResponse "Error"
+// @Failure 400,403,404 {object} response.ErrorResponse "Error"
 // @Router /api/v1/public/post [get]
 func PostIndex(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
@@ -40,9 +38,9 @@ func PostIndex(c *fiber.Ctx) error {
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param id path string true "Category ID"
+// @Param id path string true "Category ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.PublicPostsByCategoryResponse
-// @Failure 400,403 {object} response.ErrorResponse "Error"
+// @Failure 400,403,404 {object} response.ErrorResponse "Error"
 // @Router /api/v1/public/post/category/{id} [get]
 func PostCategoryPost(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
@@ -52,7 +50,11 @@ func PostCategoryPost(c *fiber.Ctx) error {
 	posts, count, err := repository.PostCategoryPost(UUID, limit, uint(limit*(page-1)), search, sort_by, sort)
 
 	if err != nil {
-		return response.InternalServerError(c, err)
+		if err == sql.ErrNoRows {
+			return response.NotFound(c, err)
+		} else {
+			return response.InternalServerError(c, err)
+		}
 	}
 
 	return response.Index(c, page, limit, count, posts)
@@ -64,9 +66,9 @@ func PostCategoryPost(c *fiber.Ctx) error {
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path string true "User ID" default(87c76e22-e2f0-4ebf-bda8-56802c0a0577)
 // @Success 200 {object} response.PublicPostsByUserResponse
-// @Failure 400,403 {object} response.ErrorResponse "Error"
+// @Failure 400,403,404 {object} response.ErrorResponse "Error"
 // @Router /api/v1/public/post/user/{id} [get]
 func UserPost(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
@@ -76,7 +78,11 @@ func UserPost(c *fiber.Ctx) error {
 	posts, count, err := repository.UserPost(UUID, limit, uint(limit*(page-1)), search, sort_by, sort)
 
 	if err != nil {
-		return response.InternalServerError(c, err)
+		if err == sql.ErrNoRows {
+			return response.NotFound(c, err)
+		} else {
+			return response.InternalServerError(c, err)
+		}
 	}
 
 	return response.Index(c, page, limit, count, posts)
@@ -88,9 +94,9 @@ func UserPost(c *fiber.Ctx) error {
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param id path string true "Post ID"
+// @Param id path string true "Post ID" default(f72cb686-2fc3-4147-8183-f93684780765)
 // @Success 200 {object} response.PostResponse
-// @Failure 400,403 {object} response.ErrorResponse "Error"
+// @Failure 400,403,404 {object} response.ErrorResponse "Error"
 // @Router /api/v1/public/post/{id} [get]
 func PostShow(c *fiber.Ctx) error {
 	ID := c.Params("id")

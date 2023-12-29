@@ -12,7 +12,7 @@ type AuthResponse struct {
 }
 
 type ErrorResponse struct {
-	Status  bool   `json:"status"`
+	Status  bool   `json:"status" example:"false"`
 	Message string `json:"message"`
 }
 

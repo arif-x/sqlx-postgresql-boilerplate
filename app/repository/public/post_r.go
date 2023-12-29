@@ -53,7 +53,7 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	_order := database.OrderBy("posts.id", sort)
 	_limit := database.Limit(limit, offset)
 
-	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid %s`, _conditions)
+	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid %s AND deleted_at IS NULL`, _conditions)
 	var count int
 	_ = repo.db.QueryRow(count_query).Scan(&count)
 
@@ -146,7 +146,7 @@ func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, sear
     post_categories.updated_at
 	`, _limit)
 
-	count_query := `SELECT count(*) FROM posts WHERE post_category_uuid = $1`
+	count_query := `SELECT count(*) FROM posts WHERE post_category_uuid = $1 AND deleted_at IS NULL`
 	var count int
 	_ = repo.db.QueryRow(count_query, uuid).Scan(&count)
 
@@ -223,7 +223,7 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
     users.updated_at
 	`, _limit)
 
-	count_query := `SELECT count(*) FROM posts WHERE user_uuid = $1`
+	count_query := `SELECT count(*) FROM posts WHERE user_uuid = $1 AND deleted_at IS NULL`
 	var count int
 	_ = repo.db.QueryRow(count_query, uuid).Scan(&count)
 
@@ -280,7 +280,7 @@ func (repo *PostRepo) Show(UUID string) (model.Post, error) {
 		)
 	END AS post_category
 	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	WHERE posts.uuid = $1 LIMIT 1 AND posts.deleted_at IS NULL 
+	WHERE posts.uuid = $1 AND posts.deleted_at IS NULL LIMIT 1
 	`
 
 	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(

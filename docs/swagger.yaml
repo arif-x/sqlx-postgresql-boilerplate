@@ -132,6 +132,7 @@ definitions:
       message:
         type: string
       status:
+        example: false
         type: boolean
     type: object
   response.PostCategoriesResponse:
@@ -351,14 +352,33 @@ paths:
       - application/json
       description: Get all post.
       parameters:
-      - description: Page no
+      - description: Page
         in: query
         name: page
         type: integer
-      - description: records per page
+      - description: Limit
         in: query
-        name: page_size
+        name: limit
         type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort By
+        enum:
+        - posts.id
+        - title
+        - content
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
       produces:
       - application/json
       responses:
@@ -388,22 +408,26 @@ paths:
       - multipart/form-data
       description: Create post.
       parameters:
-      - description: Title
+      - default: Title
+        description: Title
         in: formData
         name: title
         required: true
         type: string
-      - description: Content
+      - default: Content
+        description: Content
         in: formData
         name: content
         required: true
         type: string
-      - description: User UUID
+      - default: 87c76e22-e2f0-4ebf-bda8-56802c0a0577
+        description: User UUID
         in: formData
         name: user_uuid
         required: true
         type: string
-      - description: Post Category UUID
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Category UUID
         in: formData
         name: post_category_uuid
         required: true
@@ -438,14 +462,32 @@ paths:
       - application/json
       description: Get all post category.
       parameters:
-      - description: Page no
+      - description: Page
         in: query
         name: page
         type: integer
-      - description: records per page
+      - description: Limit
         in: query
-        name: page_size
+        name: limit
         type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort By
+        enum:
+        - id
+        - name
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
       produces:
       - application/json
       responses:
@@ -475,7 +517,8 @@ paths:
       - multipart/form-data
       description: Create post category.
       parameters:
-      - description: Name
+      - default: Category Name
+        description: Name
         in: formData
         name: name
         required: true
@@ -510,7 +553,8 @@ paths:
       - application/json
       description: Delete post category.
       parameters:
-      - description: Post Category ID
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Category ID
         in: path
         name: id
         required: true
@@ -548,7 +592,8 @@ paths:
       - application/json
       description: Get single post category.
       parameters:
-      - description: Post Category ID
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Category ID
         in: path
         name: id
         required: true
@@ -586,12 +631,14 @@ paths:
       - multipart/form-data
       description: Update post category.
       parameters:
-      - description: Post Category ID
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Category ID
         in: path
         name: id
         required: true
         type: string
-      - description: Name
+      - default: Category Name Update
+        description: Name
         in: formData
         name: name
         required: true
@@ -630,7 +677,8 @@ paths:
       - application/json
       description: Delete post.
       parameters:
-      - description: Post ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: Post ID
         in: path
         name: id
         required: true
@@ -668,7 +716,8 @@ paths:
       - application/json
       description: Get single post.
       parameters:
-      - description: Post ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: Post ID
         in: path
         name: id
         required: true
@@ -706,27 +755,32 @@ paths:
       - multipart/form-data
       description: Update post.
       parameters:
-      - description: Post ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: Post ID
         in: path
         name: id
         required: true
         type: string
-      - description: Title
+      - default: Title Update
+        description: Title
         in: formData
         name: title
         required: true
         type: string
-      - description: Content
+      - default: Content Update
+        description: Content
         in: formData
         name: content
         required: true
         type: string
-      - description: User UUID
+      - default: 87c76e22-e2f0-4ebf-bda8-56802c0a0577
+        description: User UUID
         in: formData
         name: user_uuid
         required: true
         type: string
-      - description: Post Category UUID
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Category UUID
         in: formData
         name: post_category_uuid
         required: true
@@ -765,14 +819,34 @@ paths:
       - application/json
       description: Get all user.
       parameters:
-      - description: Page no
+      - description: Page
         in: query
         name: page
         type: integer
-      - description: records per page
+      - description: Limit
         in: query
-        name: page_size
+        name: limit
         type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort By
+        enum:
+        - id
+        - name
+        - email
+        - username
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
       produces:
       - application/json
       responses:
@@ -802,17 +876,20 @@ paths:
       - multipart/form-data
       description: Create user.
       parameters:
-      - description: Name
+      - default: Name
+        description: Name
         in: formData
         name: name
         required: true
         type: string
-      - description: Username
+      - default: username
+        description: Username
         in: formData
         name: username
         required: true
         type: string
-      - description: Email
+      - default: email@gmail.com
+        description: Email
         in: formData
         name: email
         required: true
@@ -853,7 +930,8 @@ paths:
       - application/json
       description: Delete user.
       parameters:
-      - description: User ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: User ID
         in: path
         name: id
         required: true
@@ -891,7 +969,8 @@ paths:
       - application/json
       description: Get single user.
       parameters:
-      - description: User ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: User ID
         in: path
         name: id
         required: true
@@ -929,22 +1008,26 @@ paths:
       - multipart/form-data
       description: Update user.
       parameters:
-      - description: User ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: User ID
         in: path
         name: id
         required: true
         type: string
-      - description: Name
+      - default: Name Update
+        description: Name
         in: formData
         name: name
         required: true
         type: string
-      - description: Username
+      - default: usernameupdate
+        description: Username
         in: formData
         name: username
         required: true
         type: string
-      - description: Email
+      - default: emailupdate@gmail.com
+        description: Email
         in: formData
         name: email
         required: true
@@ -988,15 +1071,6 @@ paths:
       consumes:
       - application/json
       description: Get all post.
-      parameters:
-      - description: Page no
-        in: query
-        name: page
-        type: integer
-      - description: records per page
-        in: query
-        name: page_size
-        type: integer
       produces:
       - application/json
       responses:
@@ -1012,6 +1086,10 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Get all post
       tags:
       - Public Post
@@ -1021,7 +1099,8 @@ paths:
       - application/json
       description: Get single post.
       parameters:
-      - description: Post ID
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: Post ID
         in: path
         name: id
         required: true
@@ -1041,6 +1120,10 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Get single post
       tags:
       - Public Post
@@ -1050,7 +1133,8 @@ paths:
       - application/json
       description: Get post by category.
       parameters:
-      - description: Category ID
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Category ID
         in: path
         name: id
         required: true
@@ -1070,6 +1154,10 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Get post by category
       tags:
       - Public Post
@@ -1079,7 +1167,8 @@ paths:
       - application/json
       description: Get post by user.
       parameters:
-      - description: User ID
+      - default: 87c76e22-e2f0-4ebf-bda8-56802c0a0577
+        description: User ID
         in: path
         name: id
         required: true
@@ -1096,6 +1185,10 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
         "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
           description: Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'

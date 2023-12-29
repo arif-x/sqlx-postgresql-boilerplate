@@ -17,8 +17,11 @@ import (
 // @Tags Post
 // @Accept json
 // @Produce json
-// @Param page query integer false "Page no"
-// @Param page_size query integer false "records per page"
+// @Param page query integer false "Page"
+// @Param limit query integer false "Limit"
+// @Param search query string false "Search"
+// @Param sort_by query string false "Sort By" Enums(posts.id, title, content)
+// @Param sort query string false "Sort" Enums(ASC, DESC)
 // @Success 200 {object} response.PostResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -42,7 +45,7 @@ func PostIndex(c *fiber.Ctx) error {
 // @Tags Post
 // @Accept json
 // @Produce json
-// @Param id path string true "Post ID"
+// @Param id path string true "Post ID" default(f72cb686-2fc3-4147-8183-f93684780765)
 // @Success 200 {object} response.PostResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -70,10 +73,10 @@ func PostShow(c *fiber.Ctx) error {
 // @Tags Post
 // @Accept multipart/form-data
 // @Produce json
-// @Param title formData string true "Title"
-// @Param content formData string true "Content"
-// @Param user_uuid formData string true "User UUID"
-// @Param post_category_uuid formData string true "Post Category UUID"
+// @Param title formData string true "Title" default(Title)
+// @Param content formData string true "Content" default(Content)
+// @Param user_uuid formData string true "User UUID" default(87c76e22-e2f0-4ebf-bda8-56802c0a0577)
+// @Param post_category_uuid formData string true "Post Category UUID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.PostResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -101,11 +104,11 @@ func PostStore(c *fiber.Ctx) error {
 // @Tags Post
 // @Accept multipart/form-data
 // @Produce json
-// @Param id path string true "Post ID"
-// @Param title formData string true "Title"
-// @Param content formData string true "Content"
-// @Param user_uuid formData string true "User UUID"
-// @Param post_category_uuid formData string true "Post Category UUID"
+// @Param id path string true "Post ID" default(f72cb686-2fc3-4147-8183-f93684780765)
+// @Param title formData string true "Title" default(Title Update)
+// @Param content formData string true "Content" default(Content Update)
+// @Param user_uuid formData string true "User UUID" default(87c76e22-e2f0-4ebf-bda8-56802c0a0577)
+// @Param post_category_uuid formData string true "Post Category UUID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.PostResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -135,7 +138,7 @@ func PostUpdate(c *fiber.Ctx) error {
 // @Tags Post
 // @Accept json
 // @Produce json
-// @Param id path string true "Post ID"
+// @Param id path string true "Post ID" default(f72cb686-2fc3-4147-8183-f93684780765)
 // @Success 200 {object} response.PostResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth

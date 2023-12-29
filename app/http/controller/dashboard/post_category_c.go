@@ -17,8 +17,11 @@ import (
 // @Tags Post Category
 // @Accept json
 // @Produce json
-// @Param page query integer false "Page no"
-// @Param page_size query integer false "records per page"
+// @Param page query integer false "Page"
+// @Param limit query integer false "Limit"
+// @Param search query string false "Search"
+// @Param sort_by query string false "Sort By" Enums(id, name)
+// @Param sort query string false "Sort" Enums(ASC, DESC)
 // @Success 200 {object} response.PostCategoriesResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -42,7 +45,7 @@ func PostCategoryIndex(c *fiber.Ctx) error {
 // @Tags Post Category
 // @Accept json
 // @Produce json
-// @Param id path string true "Post Category ID"
+// @Param id path string true "Post Category ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.PostCategoryResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -70,7 +73,7 @@ func PostCategoryShow(c *fiber.Ctx) error {
 // @Tags Post Category
 // @Accept multipart/form-data
 // @Produce json
-// @Param name formData string true "Name"
+// @Param name formData string true "Name" default(Category Name)
 // @Success 200 {object} response.PostCategoryResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -98,8 +101,8 @@ func PostCategoryStore(c *fiber.Ctx) error {
 // @Tags Post Category
 // @Accept multipart/form-data
 // @Produce json
-// @Param id path string true "Post Category ID"
-// @Param name formData string true "Name"
+// @Param id path string true "Post Category ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
+// @Param name formData string true "Name" default(Category Name Update)
 // @Success 200 {object} response.PostCategoryResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -129,7 +132,7 @@ func PostCategoryUpdate(c *fiber.Ctx) error {
 // @Tags Post Category
 // @Accept json
 // @Produce json
-// @Param id path string true "Post Category ID"
+// @Param id path string true "Post Category ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Success 200 {object} response.PostCategoryResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth

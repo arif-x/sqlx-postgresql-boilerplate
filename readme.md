@@ -15,11 +15,14 @@ Todo List
 - Memory leaks vurnerable
 - Can be make server hiccup
 
-# How to Run DB Migration
+# How to Run DB Migration?
 - To create migration file, just run `migrate create -ext sql -dir database/migration -seq your_migration_file`
 - Run if doing up `migrate -path database/migration/ -database "postgresql://postgres:password@localhost:5432/db_name?sslmode=disable" -verbose up`
 - Run if doing down/rollback `migrate -path database/migration/ -database "postgresql://postgres:password@localhost:5432/db_name?sslmode=disable" -verbose down`
 - If you want to migrate with specified file, just run  `migrate -path database/migration/your_migration_file.sql -database "postgresql://postgres:password@localhost:5432/db_name?sslmode=disable" -verbose up`
 
-# How to Run DB Seeder
+# How to Run DB Seeder?
 - Run `go run database/seeder/main/main.go`
+
+# How to regenerate Swagger?
+- Just run `swag init --parseDependency --parseInternal`

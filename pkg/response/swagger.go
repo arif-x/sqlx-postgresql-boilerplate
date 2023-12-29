@@ -61,6 +61,36 @@ type PostsResponse struct {
 	Total   int              `json:"total"`
 }
 
+type RoleResponse struct {
+	Status  bool           `json:"status"`
+	Message string         `json:"message"`
+	Data    dashboard.Role `json:"data"`
+}
+
+type RolesResponse struct {
+	Status  bool             `json:"status"`
+	Message string           `json:"message"`
+	Data    []dashboard.Role `json:"data"`
+	Limit   int              `json:"limit"`
+	Page    int              `json:"page"`
+	Total   int              `json:"total"`
+}
+
+type PermissionResponse struct {
+	Status  bool                 `json:"status"`
+	Message string               `json:"message"`
+	Data    dashboard.Permission `json:"data"`
+}
+
+type PermissionsResponse struct {
+	Status  bool                   `json:"status"`
+	Message string                 `json:"message"`
+	Data    []dashboard.Permission `json:"data"`
+	Limit   int                    `json:"limit"`
+	Page    int                    `json:"page"`
+	Total   int                    `json:"total"`
+}
+
 type PublicPostResponse struct {
 	Status  bool        `json:"status"`
 	Message string      `json:"message"`

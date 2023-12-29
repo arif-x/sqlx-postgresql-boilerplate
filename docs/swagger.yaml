@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  dashboard.Permission:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
   dashboard.Post:
     properties:
       content:
@@ -40,6 +53,19 @@ definitions:
       uuid:
         type: string
     type: object
+  dashboard.Role:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
   dashboard.User:
     properties:
       created_at:
@@ -49,6 +75,10 @@ definitions:
       email:
         type: string
       name:
+        type: string
+      role_name:
+        type: string
+      role_uuid:
         type: string
       updated_at:
         type: string
@@ -135,6 +165,15 @@ definitions:
         example: false
         type: boolean
     type: object
+  response.PermissionResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dashboard.Permission'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
   response.PostCategoriesResponse:
     properties:
       data:
@@ -216,6 +255,15 @@ definitions:
         type: boolean
       total:
         type: integer
+    type: object
+  response.RoleResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dashboard.Role'
+      message:
+        type: string
+      status:
+        type: boolean
     type: object
   response.UserResponse:
     properties:
@@ -346,6 +394,221 @@ paths:
       summary: new user registration.
       tags:
       - Auth
+  /api/v1/dashboard/permission:
+    get:
+      consumes:
+      - application/json
+      description: Get all permission.
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort By
+        enum:
+        - id
+        - name
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoriesResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all permission
+      tags:
+      - Permission
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create permission.
+      parameters:
+      - default: Category Name
+        description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create permission
+      tags:
+      - Permission
+  /api/v1/dashboard/permission/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete permission.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Permission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete permission
+      tags:
+      - Permission
+    get:
+      consumes:
+      - application/json
+      description: Get single permission.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Permission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get single permission
+      tags:
+      - Permission
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update permission.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Permission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - default: Category Name Update
+        description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update permission
+      tags:
+      - Permission
   /api/v1/dashboard/post:
     get:
       consumes:
@@ -813,6 +1076,221 @@ paths:
       summary: Update post
       tags:
       - Post
+  /api/v1/dashboard/role:
+    get:
+      consumes:
+      - application/json
+      description: Get all role.
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort By
+        enum:
+        - id
+        - name
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostCategoriesResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all role
+      tags:
+      - Role
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create role.
+      parameters:
+      - default: Category Name
+        description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RoleResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create role
+      tags:
+      - Role
+  /api/v1/dashboard/role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete role.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RoleResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete role
+      tags:
+      - Role
+    get:
+      consumes:
+      - application/json
+      description: Get single role.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RoleResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get single role
+      tags:
+      - Role
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update role.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - default: Category Name Update
+        description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RoleResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update role
+      tags:
+      - Role
   /api/v1/dashboard/user:
     get:
       consumes:
@@ -833,7 +1311,7 @@ paths:
         type: string
       - description: Sort By
         enum:
-        - id
+        - users.uuid
         - name
         - email
         - username

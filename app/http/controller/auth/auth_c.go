@@ -46,14 +46,13 @@ func Register(c *fiber.Ctx) error {
 	register.Password = password
 
 	repository := repo.NewAuthRepo(database.GetDB())
-	user, err := repository.Register(register)
+	user, permission, err := repository.Register(register)
 
 	if err != nil {
-		fmt.Print(err)
 		return response.InternalServerError(c, err)
 	}
 
-	token, err := GenerateNewAccessToken(user.UUID, user.Username, user.Email, user.Name)
+	token, err := GenerateNewAccessToken(user.UUID, user.Username, user.Email, user.Name, user.RoleUUID, permission)
 	if err != nil {
 		return response.InternalServerError(c, errors.New("Internal Error"))
 	}
@@ -84,7 +83,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	repository := repo.NewAuthRepo(database.GetDB())
-	user, err := repository.Login(login.Username)
+	user, permission, err := repository.Login(login.Username)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -99,7 +98,7 @@ func Login(c *fiber.Ctx) error {
 		return response.InternalServerError(c, errors.New("Incorrect password"))
 	}
 
-	token, err := GenerateNewAccessToken(user.UUID, user.Username, user.Email, user.Name)
+	token, err := GenerateNewAccessToken(user.UUID, user.Username, user.Email, user.Name, user.RoleUUID, permission)
 	if err != nil {
 		return response.InternalServerError(c, errors.New("Internal Error"))
 	}
@@ -112,7 +111,7 @@ func Login(c *fiber.Ctx) error {
 
 }
 
-func GenerateNewAccessToken(UserID uuid.UUID, Username string, Email string, Name string) (string, error) {
+func GenerateNewAccessToken(UserID uuid.UUID, Username string, Email string, Name string, RoleUUID string, Permission []string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
@@ -120,6 +119,8 @@ func GenerateNewAccessToken(UserID uuid.UUID, Username string, Email string, Nam
 	claims["username"] = Username
 	claims["email"] = Email
 	claims["name"] = Name
+	claims["role_uuid"] = RoleUUID
+	claims["permission"] = Permission
 	claims["exp"] = time.Now().Add(time.Minute * time.Duration(config.AppCfg().JWTSecretExpireMinutesCount)).Unix()
 
 	t, err := token.SignedString([]byte(config.AppCfg().JWTSecretKey))

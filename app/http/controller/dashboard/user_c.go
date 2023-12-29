@@ -20,7 +20,7 @@ import (
 // @Param page query integer false "Page"
 // @Param limit query integer false "Limit"
 // @Param search query string false "Search"
-// @Param sort_by query string false "Sort By" Enums(id, name, email, username)
+// @Param sort_by query string false "Sort By" Enums(users.uuid, name, email, username)
 // @Param sort query string false "Sort" Enums(ASC, DESC)
 // @Success 200 {object} response.UsersResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"

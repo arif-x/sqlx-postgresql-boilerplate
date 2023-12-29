@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s Seed) B_PostCategory() {
+func (s Seed) C_PostCategory() {
 	for i := 0; i < 3; i++ {
 		_, err := s.db.Exec(`INSERT INTO post_categories(uuid, name, created_at) VALUES ($1,$2,$3)`,
 			uuid.New(),

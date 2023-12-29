@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func (s Seed) C_PostSeeder() {
+func (s Seed) D_PostSeeder() {
 	user, err := s.db.QueryContext(context.Background(), `SELECT uuid, name, email, username, created_at, updated_at FROM users`)
 	if err != nil {
 		log.Fatal(err)

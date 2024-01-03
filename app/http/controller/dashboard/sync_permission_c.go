@@ -61,10 +61,12 @@ func SyncPermissionUpdate(c *fiber.Ctx) error {
 	repository := repo.NewSyncPermissionRepo(database.GetDB())
 	res, err := repository.Update(ID, req)
 
-	if err == sql.ErrNoRows {
-		return response.NotFound(c, err)
-	} else {
-		response.InternalServerError(c, err)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return response.NotFound(c, err)
+		} else {
+			return response.InternalServerError(c, err)
+		}
 	}
 
 	return response.Update(c, res)

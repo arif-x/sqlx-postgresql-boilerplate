@@ -22,8 +22,8 @@ type PostRepo struct {
 func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Post, int, error) {
 	_select := `
 	posts.uuid,
-	user_uuid,
 	post_category_uuid,
+	user_uuid,
     title,
     content,
     posts.created_at,

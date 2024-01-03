@@ -9,8 +9,8 @@ import (
 
 type Post struct {
 	UUID             uuid.UUID         `db:"uuid" json:"uuid"`
-	PostCategoryUUID uuid.UUID         `db:"post_category_uuid" json:"post_category_uuid"`
 	UserUUID         uuid.UUID         `db:"user_uuid" json:"user_uuid"`
+	PostCategoryUUID uuid.UUID         `db:"post_category_uuid" json:"post_category_uuid"`
 	Title            string            `db:"title" json:"title"`
 	Content          string            `db:"content" json:"content"`
 	CreatedAt        time.Time         `db:"created_at" json:"created_at"`

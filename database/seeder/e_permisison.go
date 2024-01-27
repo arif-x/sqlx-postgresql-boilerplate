@@ -11,7 +11,7 @@ func (s Seed) E_permission() {
 		"role-index", "role-show", "role-store", "role-update", "role-destroy",
 		"permission-index", "permission-show", "permission-store", "permission-update", "permission-destroy",
 		"user-index", "user-show", "user-store", "user-update", "user-destroy",
-		"post-category-index", "post-category-show", "post-category-store", "post-category-update", "post-category-destroy",
+		"tags-index", "tags-show", "tags-store", "tags-update", "tags-destroy",
 		"post-index", "post-show", "post-store", "post-update", "post-destroy",
 		"sync-permission-index", "sync-permission-update",
 	}

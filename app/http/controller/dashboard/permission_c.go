@@ -22,7 +22,7 @@ import (
 // @Param search query string false "Search"
 // @Param sort_by query string false "Sort By" Enums(id, name)
 // @Param sort query string false "Sort" Enums(ASC, DESC)
-// @Success 200 {object} response.PostCategoriesResponse
+// @Success 200 {object} response.PermissionsResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
 // @Router /api/v1/dashboard/permission [get]

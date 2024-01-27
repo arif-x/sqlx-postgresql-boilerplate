@@ -32,22 +32,22 @@ func PostIndex(c *fiber.Ctx) error {
 	return response.Index(c, page, limit, count, posts)
 }
 
-// PublicPostByCategory func gets post by category.
-// @Description Get post by category.
-// @Summary Get post by category
+// PublicPostByTag func gets post by tag.
+// @Description Get post by tag.
+// @Summary Get post by tag
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param id path string true "Category ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
-// @Success 200 {object} response.PublicPostsByCategoryResponse
+// @Param slug path string true "Tag Slug" default(tag-1)
+// @Success 200 {object} response.PublicPostsByTagResponse
 // @Failure 400,403,404 {object} response.ErrorResponse "Error"
-// @Router /api/v1/public/post/category/{id} [get]
-func PostCategoryPost(c *fiber.Ctx) error {
+// @Router /api/v1/public/post/tag/{slug} [get]
+func TagPost(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
-	UUID := c.Params("id")
+	slug := c.Params("slug")
 	repository := repo.NewPostRepo(database.GetDB())
 
-	posts, count, err := repository.PostCategoryPost(UUID, limit, uint(limit*(page-1)), search, sort_by, sort)
+	posts, count, err := repository.TagPost(slug, limit, uint(limit*(page-1)), search, sort_by, sort)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -66,16 +66,16 @@ func PostCategoryPost(c *fiber.Ctx) error {
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param id path string true "User ID" default(87c76e22-e2f0-4ebf-bda8-56802c0a0577)
+// @Param username path string true "Username" default(username1)
 // @Success 200 {object} response.PublicPostsByUserResponse
 // @Failure 400,403,404 {object} response.ErrorResponse "Error"
-// @Router /api/v1/public/post/user/{id} [get]
+// @Router /api/v1/public/post/user/{username} [get]
 func UserPost(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
-	UUID := c.Params("id")
+	username := c.Params("username")
 	repository := repo.NewPostRepo(database.GetDB())
 
-	posts, count, err := repository.UserPost(UUID, limit, uint(limit*(page-1)), search, sort_by, sort)
+	posts, count, err := repository.UserPost(username, limit, uint(limit*(page-1)), search, sort_by, sort)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -94,15 +94,15 @@ func UserPost(c *fiber.Ctx) error {
 // @Tags Public Post
 // @Accept json
 // @Produce json
-// @Param id path string true "Post ID" default(f72cb686-2fc3-4147-8183-f93684780765)
+// @Param slug path string true "Post Slug" default(title-1)
 // @Success 200 {object} response.PostResponse
 // @Failure 400,403,404 {object} response.ErrorResponse "Error"
-// @Router /api/v1/public/post/{id} [get]
+// @Router /api/v1/public/post/{slug} [get]
 func PostShow(c *fiber.Ctx) error {
-	ID := c.Params("id")
+	slug := c.Params("slug")
 
 	repository := repo.NewPostRepo(database.GetDB())
-	post, err := repository.Show(ID)
+	post, err := repository.Show(slug)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

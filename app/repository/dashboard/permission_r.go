@@ -65,67 +65,67 @@ func (repo *PermissionRepo) Index(limit int, offset uint, search string, sort_by
 }
 
 func (repo *PermissionRepo) Show(UUID string) (model.ShowPermission, error) {
-	var postCategory model.ShowPermission
+	var Tag model.ShowPermission
 	query := "SELECT uuid, name, created_at, updated_at, deleted_at FROM permissions WHERE uuid = $1 AND permissions.deleted_at IS NULL LIMIT 1"
 	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
-		&postCategory.UpdatedAt,
-		&postCategory.DeletedAt,
+		&Tag.UUID,
+		&Tag.Name,
+		&Tag.CreatedAt,
+		&Tag.UpdatedAt,
+		&Tag.DeletedAt,
 	)
 	if err != nil {
 		return model.ShowPermission{}, err
 	}
-	return postCategory, err
+	return Tag, err
 }
 
 func (repo *PermissionRepo) Store(request *model.StorePermission) (model.Permission, error) {
 	query := `INSERT INTO "permissions" (uuid, name, created_at) VALUES($1, $2, $3) 
 	RETURNING uuid, name, created_at`
-	var postCategory model.Permission
+	var Tag model.Permission
 	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, time.Now()).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
+		&Tag.UUID,
+		&Tag.Name,
+		&Tag.CreatedAt,
 	)
 	if err != nil {
 		return model.Permission{}, err
 	}
-	return postCategory, err
+	return Tag, err
 }
 
 func (repo *PermissionRepo) Update(UUID string, request *model.UpdatePermission) (model.Permission, error) {
 	query := `UPDATE "permissions" SET name = $2, updated_at = $3 WHERE uuid = $1 
 	RETURNING uuid, name, created_at, updated_at`
-	var postCategory model.Permission
+	var Tag model.Permission
 	err := repo.db.QueryRowContext(context.Background(), query, UUID, request.Name, time.Now()).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
-		&postCategory.UpdatedAt,
+		&Tag.UUID,
+		&Tag.Name,
+		&Tag.CreatedAt,
+		&Tag.UpdatedAt,
 	)
 	if err != nil {
 		return model.Permission{}, err
 	}
-	return postCategory, err
+	return Tag, err
 }
 
 func (repo *PermissionRepo) Destroy(UUID string) (model.Permission, error) {
 	query := `UPDATE "permissions" SET updated_at = $2, deleted_at = $3 WHERE uuid = $1 
 	RETURNING uuid, name, created_at, updated_at, deleted_at`
-	var postCategory model.Permission
+	var Tag model.Permission
 	err := repo.db.QueryRowContext(context.Background(), query, UUID, time.Now(), time.Now()).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
-		&postCategory.UpdatedAt,
-		&postCategory.DeletedAt,
+		&Tag.UUID,
+		&Tag.Name,
+		&Tag.CreatedAt,
+		&Tag.UpdatedAt,
+		&Tag.DeletedAt,
 	)
 	if err != nil {
 		return model.Permission{}, err
 	}
-	return postCategory, err
+	return Tag, err
 }
 
 func NewPermissionRepo(db *database.DB) PermissionRepository {

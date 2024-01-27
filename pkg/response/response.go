@@ -20,6 +20,14 @@ func BadRequest(c *fiber.Ctx, err error) error {
 	})
 }
 
+func InvalidCredential(c *fiber.Ctx, err error) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"status":  false,
+		"message": "Invalid Credential",
+		"data":    nil,
+	})
+}
+
 func NotFound(c *fiber.Ctx, err error) error {
 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 		"status":  false,

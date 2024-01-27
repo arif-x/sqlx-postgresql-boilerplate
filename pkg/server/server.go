@@ -38,6 +38,7 @@ func Serve() {
 	route.Auth(app)
 	route.Dashboard(app)
 	route.Public(app)
+	route.FileRoutes(app)
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	// signal channel to capture system calls

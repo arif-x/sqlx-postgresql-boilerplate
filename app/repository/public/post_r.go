@@ -10,9 +10,9 @@ import (
 
 type PostRepository interface {
 	Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Post, int, error)
-	PostCategoryPost(uuid string, limit int, offset uint, search string, sort_by string, sort string) (model.PostCategoryWithPost, int, error)
-	UserPost(uuid string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error)
-	Show(UUID string) (model.Post, error)
+	TagPost(slug string, limit int, offset uint, search string, sort_by string, sort string) (model.TagWithPost, int, error)
+	UserPost(username string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error)
+	Show(slug string) (model.Post, error)
 }
 
 type PostRepo struct {
@@ -22,10 +22,15 @@ type PostRepo struct {
 func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Post, int, error) {
 	_select := `
 	posts.uuid,
-	post_category_uuid,
 	user_uuid,
+	tag_uuid,
     title,
+    thumbnail,
     content,
+	keyword,
+	posts.slug,
+	posts.is_active,
+	is_highlight,
     posts.created_at,
     posts.updated_at,
 	CASE 
@@ -40,24 +45,24 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
     	)
 	END AS user,
 	CASE 
-    	WHEN post_categories.uuid IS NULL THEN null
+    	WHEN tags.uuid IS NULL THEN null
 		ELSE json_build_object(
-        	'uuid', post_categories.uuid,
-        	'name', post_categories.name,
-        	'created_at', post_categories.created_at,
-        	'updated_at', post_categories.updated_at
+        	'uuid', tags.uuid,
+        	'name', tags.name,
+        	'created_at', tags.created_at,
+        	'updated_at', tags.updated_at
 		)
-	END AS post_category
+	END AS tag
 	`
-	_conditions := database.Search([]string{"title", "content", "users.name", "post_categories.name"}, search, "posts.deleted_at")
+	_conditions := database.Search([]string{"title", "content", "users.name", "tags.name"}, search, "posts.deleted_at")
 	_order := database.OrderBy("posts.id", sort)
 	_limit := database.Limit(limit, offset)
 
-	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid %s AND deleted_at IS NULL`, _conditions)
+	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN tags ON tags.uuid = posts.tag_uuid %s AND deleted_at IS NULL`, _conditions)
 	var count int
 	_ = repo.db.QueryRow(count_query).Scan(&count)
 
-	query := fmt.Sprintf(`SELECT %s FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid %s %s %s`, _select, _conditions, _order, _limit)
+	query := fmt.Sprintf(`SELECT %s FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN tags ON tags.uuid = posts.tag_uuid %s %s %s`, _select, _conditions, _order, _limit)
 
 	rows, err := repo.db.QueryContext(context.Background(), query)
 	if err != nil {
@@ -70,14 +75,19 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 		var i model.Post
 		err := rows.Scan(
 			&i.UUID,
-			&i.PostCategoryUUID,
+			&i.TagUUID,
 			&i.UserUUID,
 			&i.Title,
+			&i.Thumbnail,
 			&i.Content,
+			&i.Keyword,
+			&i.Slug,
+			&i.IsActive,
+			&i.IsHighlight,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.User,
-			&i.PostCategory,
+			&i.Tag,
 		)
 		if err != nil {
 			return nil, 0, err
@@ -94,20 +104,26 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	return items, count, nil
 }
 
-func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, search string, sort_by string, sort string) (model.PostCategoryWithPost, int, error) {
+func (repo *PostRepo) TagPost(slug string, limit int, offset uint, search string, sort_by string, sort string) (model.TagWithPost, int, error) {
 	_limit := database.Limit(limit, offset)
 	_select := fmt.Sprintf(`
-	post_categories.uuid,
-    post_categories.name,
+	tags.uuid,
+    tags.name,
+	tags.slug,
     COALESCE(
         (
             SELECT json_agg(
                 json_build_object(
                     'uuid', posts.uuid,
-                    'post_category_uuid', posts.post_category_uuid,
+                    'tag_uuid', posts.tag_uuid,
                     'user_uuid', posts.user_uuid,
                     'title', posts.title,
-                    'content', posts.content,
+                    'thumbnail', posts.thumbnail,
+					'content', posts.content,
+					'keyword', posts.keyword,
+					'slug', posts.slug,
+					'is_active', posts.is_active,
+					'is_highlight', posts.is_highlight,
                     'user', CASE 
                         WHEN user_uuid_u IS NULL THEN null
                             ELSE json_build_object(
@@ -119,13 +135,14 @@ func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, sear
                                     'updated_at', user_updated_at
                             )
                         END,
-                    'post_category', CASE 
-                        WHEN post_category_uuid_u IS NULL THEN null
+                    'tag', CASE 
+                        WHEN tag_uuid_u IS NULL THEN null
                             ELSE json_build_object(
-                                    'uuid', post_category_uuid_u,
-                                    'name', post_category_name,
-                                    'created_at', post_category_created_at,
-                                    'updated_at', post_category_updated_at
+                                    'uuid', tag_uuid_u,
+                                    'name', tag_name,
+									'slug', tag_slug,
+                                    'created_at', tag_created_at,
+                                    'updated_at', tag_updated_at
                             )
                         END
                 )
@@ -133,43 +150,44 @@ func (repo *PostRepo) PostCategoryPost(uuid string, limit int, offset uint, sear
             FROM (SELECT 
             	posts.*, 
             	users.uuid as user_uuid_u, users.name as user_name, users.username as user_username, users.email as user_email, users.created_at as user_created_at, users.updated_at as user_updated_at, 
-            	post_categories.uuid as post_category_uuid_u, post_categories.name as post_category_name, post_categories.created_at as post_category_created_at, post_categories.updated_at as post_category_updated_at 
+            	tags.uuid as tag_uuid_u, tags.name as tag_name, tags.slug as tag_slug, tags.created_at as tag_created_at, tags.updated_at as tag_updated_at 
             	FROM posts
 	            LEFT JOIN users ON users.uuid = posts.user_uuid
-	            LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	            WHERE posts.post_category_uuid = $1 AND posts.deleted_at IS NULL 
+	            LEFT JOIN tags ON tags.uuid = posts.tag_uuid
+	            WHERE tags.slug = $1 AND posts.is_active = true AND posts.deleted_at IS NULL 
 	            %s
             ) posts
         ), '[]'
 	) AS post,
-    post_categories.created_at,
-    post_categories.updated_at
+    tags.created_at,
+    tags.updated_at
 	`, _limit)
 
-	count_query := `SELECT count(*) FROM posts WHERE post_category_uuid = $1 AND deleted_at IS NULL`
+	count_query := `SELECT count(*) FROM posts JOIN tags ON tags.uuid = posts.tag_uuid WHERE tags.slug = $1 AND posts.is_active = true AND posts.deleted_at IS NULL`
 	var count int
-	_ = repo.db.QueryRow(count_query, uuid).Scan(&count)
+	_ = repo.db.QueryRow(count_query, slug).Scan(&count)
 
-	query := fmt.Sprintf(`SELECT %s FROM post_categories WHERE post_categories.uuid = $1`, _select)
+	query := fmt.Sprintf(`SELECT %s FROM tags WHERE tags.slug = $1 AND tags.is_active = true`, _select)
 
-	var items model.PostCategoryWithPost
+	var items model.TagWithPost
 
-	err := repo.db.QueryRowContext(context.Background(), query, uuid).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, slug).Scan(
 		&items.UUID,
 		&items.Name,
+		&items.Slug,
 		&items.Post,
 		&items.CreatedAt,
 		&items.UpdatedAt,
 	)
 
 	if err != nil {
-		return model.PostCategoryWithPost{}, 0, err
+		return model.TagWithPost{}, 0, err
 	}
 
 	return items, count, nil
 }
 
-func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error) {
+func (repo *PostRepo) UserPost(username string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error) {
 	_limit := database.Limit(limit, offset)
 	_select := fmt.Sprintf(`
 	users.uuid,
@@ -181,10 +199,15 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
             SELECT json_agg(
                 json_build_object(
                     'uuid', posts.uuid,
-                    'post_category_uuid', posts.post_category_uuid,
+                    'tag_uuid', posts.tag_uuid,
                     'user_uuid', posts.user_uuid,
                     'title', posts.title,
-                    'content', posts.content,
+                    'thumbnail', posts.thumbnail,
+					'content', posts.content,
+					'keyword', posts.keyword,
+					'slug', posts.slug,
+					'is_active', posts.is_active,
+					'is_highlight', posts.is_highlight,
                     'user', CASE 
                         WHEN user_uuid_u IS NULL THEN null
                             ELSE json_build_object(
@@ -196,13 +219,14 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
                                     'updated_at', user_updated_at
                             )
                         END,
-                    'post_category', CASE 
-                        WHEN post_category_uuid_u IS NULL THEN null
+                    'tag', CASE 
+                        WHEN tag_uuid_u IS NULL THEN null
                             ELSE json_build_object(
-                                    'uuid', post_category_uuid_u,
-                                    'name', post_category_name,
-                                    'created_at', post_category_created_at,
-                                    'updated_at', post_category_updated_at
+                                    'uuid', tag_uuid_u,
+                                    'name', tag_name,
+									'slug', tag_slug,
+                                    'created_at', tag_created_at,
+                                    'updated_at', tag_updated_at
                             )
                         END
                 )
@@ -210,11 +234,11 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
             FROM (SELECT 
             	posts.*, 
             	users.uuid as user_uuid_u, users.name as user_name, users.username as user_username, users.email as user_email, users.created_at as user_created_at, users.updated_at as user_updated_at, 
-            	post_categories.uuid as post_category_uuid_u, post_categories.name as post_category_name, post_categories.created_at as post_category_created_at, post_categories.updated_at as post_category_updated_at 
+            	tags.uuid as tag_uuid_u, tags.name as tag_name, tags.slug as tag_slug, tags.created_at as tag_created_at, tags.updated_at as tag_updated_at 
             	FROM posts
 	            LEFT JOIN users ON users.uuid = posts.user_uuid
-	            LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid 
-	            WHERE posts.user_uuid = $1 AND posts.deleted_at IS NULL 
+	            LEFT JOIN tags ON tags.uuid = posts.tag_uuid 
+	            WHERE username = $1 AND posts.is_active = true AND posts.deleted_at IS NULL 
 	            %s
             ) posts
         ), '[]'
@@ -223,15 +247,15 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
     users.updated_at
 	`, _limit)
 
-	count_query := `SELECT count(*) FROM posts WHERE user_uuid = $1 AND deleted_at IS NULL`
+	count_query := `SELECT count(*) FROM posts JOIN users ON users.uuid = posts.user_uuid WHERE username = $1 AND posts.is_active = true AND posts.deleted_at IS NULL`
 	var count int
-	_ = repo.db.QueryRow(count_query, uuid).Scan(&count)
+	_ = repo.db.QueryRow(count_query, username).Scan(&count)
 
-	query := fmt.Sprintf(`SELECT %s FROM users WHERE users.uuid = $1`, _select)
+	query := fmt.Sprintf(`SELECT %s FROM users WHERE username = $1`, _select)
 
 	var items model.UserWithPost
 
-	err := repo.db.QueryRowContext(context.Background(), query, uuid).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, username).Scan(
 		&items.UUID,
 		&items.Name,
 		&items.Username,
@@ -248,17 +272,22 @@ func (repo *PostRepo) UserPost(uuid string, limit int, offset uint, search strin
 	return items, count, nil
 }
 
-func (repo *PostRepo) Show(UUID string) (model.Post, error) {
+func (repo *PostRepo) Show(slug string) (model.Post, error) {
 	var post model.Post
 	query := `
 	SELECT 
 	posts.uuid,
 	user_uuid,
-	post_category_uuid,
-	title,
-	content,
-	posts.created_at,
-	posts.updated_at,
+	tag_uuid,
+    title,
+    thumbnail,
+    content,
+	keyword,
+	posts.slug,
+	posts.is_active,
+	is_highlight,
+    posts.created_at,
+    posts.updated_at,
 	CASE 
     	WHEN users.uuid IS NULL THEN null
     	ELSE json_build_object(
@@ -271,28 +300,34 @@ func (repo *PostRepo) Show(UUID string) (model.Post, error) {
     	)
 	END AS user,
 	CASE 
-    	WHEN post_categories.uuid IS NULL THEN null
+    	WHEN tags.uuid IS NULL THEN null
 		ELSE json_build_object(
-        	'uuid', post_categories.uuid,
-        	'name', post_categories.name,
-        	'created_at', post_categories.created_at,
-        	'updated_at', post_categories.updated_at
+        	'uuid', tags.uuid,
+        	'name', tags.name,
+			'slug', tags.slug,
+        	'created_at', tags.created_at,
+        	'updated_at', tags.updated_at
 		)
-	END AS post_category
-	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN post_categories ON post_categories.uuid = posts.post_category_uuid
-	WHERE posts.uuid = $1 AND posts.deleted_at IS NULL LIMIT 1
+	END AS tag
+	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN tags ON tags.uuid = posts.tag_uuid
+	WHERE posts.slug = $1 AND posts.is_active = true AND posts.deleted_at IS NULL LIMIT 1
 	`
 
-	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
+	err := repo.db.QueryRowContext(context.Background(), query, slug).Scan(
 		&post.UUID,
-		&post.PostCategoryUUID,
+		&post.TagUUID,
 		&post.UserUUID,
 		&post.Title,
+		&post.Thumbnail,
 		&post.Content,
+		&post.Keyword,
+		&post.Slug,
+		&post.IsActive,
+		&post.IsHighlight,
 		&post.CreatedAt,
 		&post.UpdatedAt,
 		&post.User,
-		&post.PostCategory,
+		&post.Tag,
 	)
 
 	return post, err

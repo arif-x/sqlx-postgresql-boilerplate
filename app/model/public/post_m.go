@@ -8,16 +8,21 @@ import (
 )
 
 type Post struct {
-	UUID             uuid.UUID         `db:"uuid" json:"uuid"`
-	UserUUID         uuid.UUID         `db:"user_uuid" json:"user_uuid"`
-	PostCategoryUUID uuid.UUID         `db:"post_category_uuid" json:"post_category_uuid"`
-	Title            string            `db:"title" json:"title"`
-	Content          string            `db:"content" json:"content"`
-	CreatedAt        time.Time         `db:"created_at" json:"created_at"`
-	UpdatedAt        *time.Time        `db:"updated_at" json:"updated_at"`
-	DeletedAt        *time.Time        `db:"deleted_at" json:"deleted_at"`
-	User             *jsonutil.JSONRaw `db:"user" json:"user"`
-	PostCategory     *jsonutil.JSONRaw `db:"post_category" json:"post_category"`
+	UUID        uuid.UUID         `db:"uuid" json:"uuid"`
+	TagUUID     uuid.UUID         `db:"tag_uuid" json:"tag_uuid"`
+	UserUUID    uuid.UUID         `db:"user_uuid" json:"user_uuid"`
+	Title       string            `db:"title" json:"title"`
+	Thumbnail   string            `db:"thumbnail" json:"thumbnail"`
+	Content     string            `db:"content" json:"content"`
+	Keyword     string            `db:"keyword" json:"keyword"`
+	Slug        string            `db:"slug" json:"slug"`
+	IsActive    string            `db:"is_active" json:"is_active"`
+	IsHighlight string            `db:"is_highlight" json:"is_highlight"`
+	CreatedAt   time.Time         `db:"created_at" json:"created_at"`
+	UpdatedAt   *time.Time        `db:"updated_at" json:"updated_at"`
+	DeletedAt   *time.Time        `db:"deleted_at" json:"deleted_at"`
+	User        *jsonutil.JSONRaw `db:"user" json:"user"`
+	Tag         *jsonutil.JSONRaw `db:"tag" json:"tag"`
 }
 
 type UserWithPost struct {
@@ -30,10 +35,11 @@ type UserWithPost struct {
 	Post      *jsonutil.JSONRaw `db:"post" json:"post"`
 }
 
-type PostCategoryWithPost struct {
+type TagWithPost struct {
 	UUID      uuid.UUID         `db:"uuid" json:"uuid"`
 	Name      string            `db:"name" json:"name"`
 	CreatedAt time.Time         `db:"created_at" json:"created_at"`
 	UpdatedAt *time.Time        `db:"updated_at" json:"updated_at"`
 	Post      *jsonutil.JSONRaw `db:"post" json:"post"`
+	Slug      string            `db:"slug" json:"slug"`
 }

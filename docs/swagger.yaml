@@ -21,11 +21,21 @@ definitions:
         type: string
       deleted_at:
         type: string
-      post_category:
+      is_active:
+        type: boolean
+      is_highlight:
+        type: boolean
+      keyword:
+        type: string
+      slug:
+        type: string
+      tag:
         items:
           type: integer
         type: array
-      post_category_uuid:
+      tag_uuid:
+        type: string
+      thumbnail:
         type: string
       title:
         type: string
@@ -40,12 +50,14 @@ definitions:
       uuid:
         type: string
     type: object
-  dashboard.PostCategory:
+  dashboard.Role:
     properties:
       created_at:
         type: string
       deleted_at:
         type: string
+      is_active:
+        type: boolean
       name:
         type: string
       updated_at:
@@ -53,13 +65,17 @@ definitions:
       uuid:
         type: string
     type: object
-  dashboard.Role:
+  dashboard.Tag:
     properties:
       created_at:
         type: string
       deleted_at:
         type: string
+      is_active:
+        type: boolean
       name:
+        type: string
+      slug:
         type: string
       updated_at:
         type: string
@@ -95,11 +111,21 @@ definitions:
         type: string
       deleted_at:
         type: string
-      post_category:
+      is_active:
+        type: string
+      is_highlight:
+        type: string
+      keyword:
+        type: string
+      slug:
+        type: string
+      tag:
         items:
           type: integer
         type: array
-      post_category_uuid:
+      tag_uuid:
+        type: string
+      thumbnail:
         type: string
       title:
         type: string
@@ -114,7 +140,7 @@ definitions:
       uuid:
         type: string
     type: object
-  public.PostCategoryWithPost:
+  public.TagWithPost:
     properties:
       created_at:
         type: string
@@ -124,6 +150,8 @@ definitions:
         items:
           type: integer
         type: array
+      slug:
+        type: string
       updated_at:
         type: string
       uuid:
@@ -174,11 +202,11 @@ definitions:
       status:
         type: boolean
     type: object
-  response.PostCategoriesResponse:
+  response.PermissionsResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/dashboard.PostCategory'
+          $ref: '#/definitions/dashboard.Permission'
         type: array
       limit:
         type: integer
@@ -191,15 +219,6 @@ definitions:
       total:
         type: integer
     type: object
-  response.PostCategoryResponse:
-    properties:
-      data:
-        $ref: '#/definitions/dashboard.PostCategory'
-      message:
-        type: string
-      status:
-        type: boolean
-    type: object
   response.PostResponse:
     properties:
       data:
@@ -209,10 +228,10 @@ definitions:
       status:
         type: boolean
     type: object
-  response.PublicPostsByCategoryResponse:
+  response.PublicPostsByTagResponse:
     properties:
       data:
-        $ref: '#/definitions/public.PostCategoryWithPost'
+        $ref: '#/definitions/public.TagWithPost'
       limit:
         type: integer
       message:
@@ -265,6 +284,23 @@ definitions:
       status:
         type: boolean
     type: object
+  response.RolesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dashboard.Role'
+        type: array
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
+    type: object
   response.SyncPermissionResponse:
     properties:
       data:
@@ -273,6 +309,32 @@ definitions:
         type: string
       status:
         type: boolean
+    type: object
+  response.TagResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dashboard.Tag'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  response.TagsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dashboard.Tag'
+        type: array
+      limit:
+        type: integer
+      message:
+        type: string
+      page:
+        type: integer
+      status:
+        type: boolean
+      total:
+        type: integer
     type: object
   response.UserResponse:
     properties:
@@ -303,8 +365,8 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: SQLX GoFiber Boilerplate documentation.
-  title: SQLX GoFiber Boilerplate API
+  description: Rumaloka API Swag.
+  title: Rumaloka API
   version: "1.0"
 paths:
   /api/v1/auth/login:
@@ -403,6 +465,79 @@ paths:
       summary: new user registration.
       tags:
       - Auth
+  /api/v1/auth/send-email:
+    post:
+      consumes:
+      - multipart/form-data
+      description: user send verificationemail.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user send verificationemail.
+      tags:
+      - Auth
+  /api/v1/auth/verify/{token}:
+    get:
+      consumes:
+      - multipart/form-data
+      description: user verify email.
+      parameters:
+      - default: f72cb686-2fc3-4147-8183-f93684780765
+        description: Email Token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user verify email.
+      tags:
+      - Auth
   /api/v1/dashboard/permission:
     get:
       consumes:
@@ -441,7 +576,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.PostCategoriesResponse'
+            $ref: '#/definitions/response.PermissionsResponse'
         "400":
           description: Error
           schema:
@@ -680,18 +815,6 @@ paths:
       - multipart/form-data
       description: Create post.
       parameters:
-      - default: Title
-        description: Title
-        in: formData
-        name: title
-        required: true
-        type: string
-      - default: Content
-        description: Content
-        in: formData
-        name: content
-        required: true
-        type: string
       - default: 87c76e22-e2f0-4ebf-bda8-56802c0a0577
         description: User UUID
         in: formData
@@ -699,11 +822,44 @@ paths:
         required: true
         type: string
       - default: 22863142-1cfe-48cc-9640-ea88926429a4
-        description: Post Category UUID
+        description: Post Tag UUID
         in: formData
-        name: post_category_uuid
+        name: tag_uuid
         required: true
         type: string
+      - default: Title
+        description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Thumbnail
+        in: formData
+        name: thumbnail
+        required: true
+        type: file
+      - default: Content
+        description: Content
+        in: formData
+        name: content
+        required: true
+        type: string
+      - default: keyword 1, keyword 2
+        description: Keyword
+        in: formData
+        name: keyword
+        required: true
+        type: string
+      - description: Is Active
+        in: formData
+        name: is_active
+        required: true
+        type: boolean
+      - description: Is Highlight
+        in: formData
+        name: is_highlight
+        required: true
+        type: boolean
       produces:
       - application/json
       responses:
@@ -728,221 +884,6 @@ paths:
       summary: Create post
       tags:
       - Post
-  /api/v1/dashboard/post-category:
-    get:
-      consumes:
-      - application/json
-      description: Get all post category.
-      parameters:
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Sort By
-        enum:
-        - id
-        - name
-        in: query
-        name: sort_by
-        type: string
-      - description: Sort
-        enum:
-        - ASC
-        - DESC
-        in: query
-        name: sort
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PostCategoriesResponse'
-        "400":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "401":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "403":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Get all post category
-      tags:
-      - Post Category
-    post:
-      consumes:
-      - multipart/form-data
-      description: Create post category.
-      parameters:
-      - default: Category Name
-        description: Name
-        in: formData
-        name: name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PostCategoryResponse'
-        "400":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "401":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "403":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Create post category
-      tags:
-      - Post Category
-  /api/v1/dashboard/post-category/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete post category.
-      parameters:
-      - default: 22863142-1cfe-48cc-9640-ea88926429a4
-        description: Post Category ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PostCategoryResponse'
-        "400":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "401":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "403":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Delete post category
-      tags:
-      - Post Category
-    get:
-      consumes:
-      - application/json
-      description: Get single post category.
-      parameters:
-      - default: 22863142-1cfe-48cc-9640-ea88926429a4
-        description: Post Category ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PostCategoryResponse'
-        "400":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "401":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "403":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Get single post category
-      tags:
-      - Post Category
-    put:
-      consumes:
-      - multipart/form-data
-      description: Update post category.
-      parameters:
-      - default: 22863142-1cfe-48cc-9640-ea88926429a4
-        description: Post Category ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - default: Category Name Update
-        description: Name
-        in: formData
-        name: name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PostCategoryResponse'
-        "400":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "401":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "403":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Update post category
-      tags:
-      - Post Category
   /api/v1/dashboard/post/{id}:
     delete:
       consumes:
@@ -1033,18 +974,6 @@ paths:
         name: id
         required: true
         type: string
-      - default: Title Update
-        description: Title
-        in: formData
-        name: title
-        required: true
-        type: string
-      - default: Content Update
-        description: Content
-        in: formData
-        name: content
-        required: true
-        type: string
       - default: 87c76e22-e2f0-4ebf-bda8-56802c0a0577
         description: User UUID
         in: formData
@@ -1052,11 +981,43 @@ paths:
         required: true
         type: string
       - default: 22863142-1cfe-48cc-9640-ea88926429a4
-        description: Post Category UUID
+        description: Post Tag UUID
         in: formData
-        name: post_category_uuid
+        name: tag_uuid
         required: true
         type: string
+      - default: Title Update
+        description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Thumbnail
+        in: formData
+        name: thumbnail
+        type: file
+      - default: Content Update
+        description: Content
+        in: formData
+        name: content
+        required: true
+        type: string
+      - default: keyword 1, keyword 2
+        description: Keyword
+        in: formData
+        name: keyword
+        required: true
+        type: string
+      - description: Is Active
+        in: formData
+        name: is_active
+        required: true
+        type: boolean
+      - description: Is Highlight
+        in: formData
+        name: is_highlight
+        required: true
+        type: boolean
       produces:
       - application/json
       responses:
@@ -1123,7 +1084,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.PostCategoriesResponse'
+            $ref: '#/definitions/response.TagsResponse'
         "400":
           description: Error
           schema:
@@ -1152,6 +1113,11 @@ paths:
         name: name
         required: true
         type: string
+      - description: Is Active
+        in: formData
+        name: is_active
+        required: true
+        type: boolean
       produces:
       - application/json
       responses:
@@ -1233,7 +1199,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.RoleResponse'
+            $ref: '#/definitions/response.RolesResponse'
         "400":
           description: Error
           schema:
@@ -1272,6 +1238,11 @@ paths:
         name: name
         required: true
         type: string
+      - description: Is Active
+        in: formData
+        name: is_active
+        required: true
+        type: boolean
       produces:
       - application/json
       responses:
@@ -1387,6 +1358,231 @@ paths:
       summary: update permissions per role
       tags:
       - Sync Permission
+  /api/v1/dashboard/tags:
+    get:
+      consumes:
+      - application/json
+      description: Get all post tag.
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort By
+        enum:
+        - id
+        - name
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TagsResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all post tag
+      tags:
+      - Post Tag
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create post tag.
+      parameters:
+      - default: Tag Name
+        description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Is Active
+        in: formData
+        name: is_active
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TagResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create post tag
+      tags:
+      - Post Tag
+  /api/v1/dashboard/tags/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete post tag.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Tag ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TagResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete post tag
+      tags:
+      - Post Tag
+    get:
+      consumes:
+      - application/json
+      description: Get single post tag.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Tag ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TagResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get single post tag
+      tags:
+      - Post Tag
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update post tag.
+      parameters:
+      - default: 22863142-1cfe-48cc-9640-ea88926429a4
+        description: Post Tag ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - default: Tag Name Update
+        description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Is Active
+        in: formData
+        name: is_active
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TagResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update post tag
+      tags:
+      - Post Tag
   /api/v1/dashboard/user:
     get:
       consumes:
@@ -1679,16 +1875,16 @@ paths:
       summary: Get all post
       tags:
       - Public Post
-  /api/v1/public/post/{id}:
+  /api/v1/public/post/{slug}:
     get:
       consumes:
       - application/json
       description: Get single post.
       parameters:
-      - default: f72cb686-2fc3-4147-8183-f93684780765
-        description: Post ID
+      - default: title-1
+        description: Post Slug
         in: path
-        name: id
+        name: slug
         required: true
         type: string
       produces:
@@ -1713,16 +1909,16 @@ paths:
       summary: Get single post
       tags:
       - Public Post
-  /api/v1/public/post/category/{id}:
+  /api/v1/public/post/tag/{slug}:
     get:
       consumes:
       - application/json
-      description: Get post by category.
+      description: Get post by tag.
       parameters:
-      - default: 22863142-1cfe-48cc-9640-ea88926429a4
-        description: Category ID
+      - default: tag-1
+        description: Tag Slug
         in: path
-        name: id
+        name: slug
         required: true
         type: string
       produces:
@@ -1731,7 +1927,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.PublicPostsByCategoryResponse'
+            $ref: '#/definitions/response.PublicPostsByTagResponse'
         "400":
           description: Error
           schema:
@@ -1744,19 +1940,19 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Get post by category
+      summary: Get post by tag
       tags:
       - Public Post
-  /api/v1/public/post/user/{id}:
+  /api/v1/public/post/user/{username}:
     get:
       consumes:
       - application/json
       description: Get post by user.
       parameters:
-      - default: 87c76e22-e2f0-4ebf-bda8-56802c0a0577
-        description: User ID
+      - default: username1
+        description: Username
         in: path
-        name: id
+        name: username
         required: true
         type: string
       produces:

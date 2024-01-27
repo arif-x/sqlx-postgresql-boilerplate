@@ -157,6 +157,120 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/auth/send-email": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "user send verificationemail.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "user send verificationemail.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/verify/{token}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "user verify email.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "user verify email.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
+                        "description": "Email Token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/dashboard/permission": {
             "get": {
                 "security": [
@@ -219,7 +333,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.PostCategoriesResponse"
+                            "$ref": "#/definitions/response.PermissionsResponse"
                         }
                     },
                     "400": {
@@ -593,9 +707,32 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
+                        "description": "User UUID",
+                        "name": "user_uuid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Post Tag UUID",
+                        "name": "tag_uuid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "Title",
                         "description": "Title",
                         "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Thumbnail",
+                        "name": "thumbnail",
                         "in": "formData",
                         "required": true
                     },
@@ -609,17 +746,23 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
-                        "description": "User UUID",
-                        "name": "user_uuid",
+                        "default": "keyword 1, keyword 2",
+                        "description": "Keyword",
+                        "name": "keyword",
                         "in": "formData",
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
-                        "description": "Post Category UUID",
-                        "name": "post_category_uuid",
+                        "type": "boolean",
+                        "description": "Is Active",
+                        "name": "is_active",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Highlight",
+                        "name": "is_highlight",
                         "in": "formData",
                         "required": true
                     }
@@ -644,336 +787,6 @@ const docTemplate = `{
                         }
                     },
                     "403": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/dashboard/post-category": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get all post category.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Post Category"
-                ],
-                "summary": "Get all post category",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Search",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "id",
-                            "name"
-                        ],
-                        "type": "string",
-                        "description": "Sort By",
-                        "name": "sort_by",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "ASC",
-                            "DESC"
-                        ],
-                        "type": "string",
-                        "description": "Sort",
-                        "name": "sort",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PostCategoriesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create post category.",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Post Category"
-                ],
-                "summary": "Create post category",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Category Name",
-                        "description": "Name",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PostCategoryResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/dashboard/post-category/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get single post category.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Post Category"
-                ],
-                "summary": "Get single post category",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
-                        "description": "Post Category ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PostCategoryResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Update post category.",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Post Category"
-                ],
-                "summary": "Update post category",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
-                        "description": "Post Category ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "Category Name Update",
-                        "description": "Name",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PostCategoryResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Delete post category.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Post Category"
-                ],
-                "summary": "Delete post category",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
-                        "description": "Post Category ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PostCategoryResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
                         "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
@@ -1071,11 +884,33 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
+                        "description": "User UUID",
+                        "name": "user_uuid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Post Tag UUID",
+                        "name": "tag_uuid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "Title Update",
                         "description": "Title",
                         "name": "title",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Thumbnail",
+                        "name": "thumbnail",
+                        "in": "formData"
                     },
                     {
                         "type": "string",
@@ -1087,17 +922,23 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
-                        "description": "User UUID",
-                        "name": "user_uuid",
+                        "default": "keyword 1, keyword 2",
+                        "description": "Keyword",
+                        "name": "keyword",
                         "in": "formData",
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
-                        "description": "Post Category UUID",
-                        "name": "post_category_uuid",
+                        "type": "boolean",
+                        "description": "Is Active",
+                        "name": "is_active",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Highlight",
+                        "name": "is_highlight",
                         "in": "formData",
                         "required": true
                     }
@@ -1258,7 +1099,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.PostCategoriesResponse"
+                            "$ref": "#/definitions/response.TagsResponse"
                         }
                     },
                     "400": {
@@ -1304,6 +1145,13 @@ const docTemplate = `{
                         "default": "Role Name",
                         "description": "Name",
                         "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Active",
+                        "name": "is_active",
                         "in": "formData",
                         "required": true
                     }
@@ -1368,7 +1216,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.RoleResponse"
+                            "$ref": "#/definitions/response.RolesResponse"
                         }
                     },
                     "400": {
@@ -1428,6 +1276,13 @@ const docTemplate = `{
                         "default": "Role Name Update",
                         "description": "Name",
                         "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Active",
+                        "name": "is_active",
                         "in": "formData",
                         "required": true
                     }
@@ -1630,6 +1485,350 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.SyncPermissionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/tags": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all post tag.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post Tag"
+                ],
+                "summary": "Get all post tag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "id",
+                            "name"
+                        ],
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.TagsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create post tag.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post Tag"
+                ],
+                "summary": "Create post tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Tag Name",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Active",
+                        "name": "is_active",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.TagResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/tags/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get single post tag.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post Tag"
+                ],
+                "summary": "Get single post tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Post Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.TagResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update post tag.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post Tag"
+                ],
+                "summary": "Update post tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Post Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "Tag Name Update",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Active",
+                        "name": "is_active",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.TagResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete post tag.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post Tag"
+                ],
+                "summary": "Delete post tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
+                        "description": "Post Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.TagResponse"
                         }
                     },
                     "400": {
@@ -2096,9 +2295,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/public/post/category/{id}": {
+        "/api/v1/public/post/tag/{slug}": {
             "get": {
-                "description": "Get post by category.",
+                "description": "Get post by tag.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2108,13 +2307,13 @@ const docTemplate = `{
                 "tags": [
                     "Public Post"
                 ],
-                "summary": "Get post by category",
+                "summary": "Get post by tag",
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "22863142-1cfe-48cc-9640-ea88926429a4",
-                        "description": "Category ID",
-                        "name": "id",
+                        "default": "tag-1",
+                        "description": "Tag Slug",
+                        "name": "slug",
                         "in": "path",
                         "required": true
                     }
@@ -2123,7 +2322,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.PublicPostsByCategoryResponse"
+                            "$ref": "#/definitions/response.PublicPostsByTagResponse"
                         }
                     },
                     "400": {
@@ -2147,7 +2346,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/public/post/user/{id}": {
+        "/api/v1/public/post/user/{username}": {
             "get": {
                 "description": "Get post by user.",
                 "consumes": [
@@ -2163,9 +2362,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "87c76e22-e2f0-4ebf-bda8-56802c0a0577",
-                        "description": "User ID",
-                        "name": "id",
+                        "default": "username1",
+                        "description": "Username",
+                        "name": "username",
                         "in": "path",
                         "required": true
                     }
@@ -2198,7 +2397,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/public/post/{id}": {
+        "/api/v1/public/post/{slug}": {
             "get": {
                 "description": "Get single post.",
                 "consumes": [
@@ -2214,9 +2413,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "f72cb686-2fc3-4147-8183-f93684780765",
-                        "description": "Post ID",
-                        "name": "id",
+                        "default": "title-1",
+                        "description": "Post Slug",
+                        "name": "slug",
                         "in": "path",
                         "required": true
                     }
@@ -2283,13 +2482,28 @@ const docTemplate = `{
                 "deleted_at": {
                     "type": "string"
                 },
-                "post_category": {
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_highlight": {
+                    "type": "boolean"
+                },
+                "keyword": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "tag": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
-                "post_category_uuid": {
+                "tag_uuid": {
+                    "type": "string"
+                },
+                "thumbnail": {
                     "type": "string"
                 },
                 "title": {
@@ -2312,7 +2526,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dashboard.PostCategory": {
+        "dashboard.Role": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2320,6 +2534,9 @@ const docTemplate = `{
                 },
                 "deleted_at": {
                     "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
@@ -2332,7 +2549,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dashboard.Role": {
+        "dashboard.Tag": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2341,7 +2558,13 @@ const docTemplate = `{
                 "deleted_at": {
                     "type": "string"
                 },
+                "is_active": {
+                    "type": "boolean"
+                },
                 "name": {
+                    "type": "string"
+                },
+                "slug": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -2396,13 +2619,28 @@ const docTemplate = `{
                 "deleted_at": {
                     "type": "string"
                 },
-                "post_category": {
+                "is_active": {
+                    "type": "string"
+                },
+                "is_highlight": {
+                    "type": "string"
+                },
+                "keyword": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "tag": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
-                "post_category_uuid": {
+                "tag_uuid": {
+                    "type": "string"
+                },
+                "thumbnail": {
                     "type": "string"
                 },
                 "title": {
@@ -2425,7 +2663,7 @@ const docTemplate = `{
                 }
             }
         },
-        "public.PostCategoryWithPost": {
+        "public.TagWithPost": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2439,6 +2677,9 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
+                },
+                "slug": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
@@ -2517,13 +2758,13 @@ const docTemplate = `{
                 }
             }
         },
-        "response.PostCategoriesResponse": {
+        "response.PermissionsResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dashboard.PostCategory"
+                        "$ref": "#/definitions/dashboard.Permission"
                     }
                 },
                 "limit": {
@@ -2543,20 +2784,6 @@ const docTemplate = `{
                 }
             }
         },
-        "response.PostCategoryResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/dashboard.PostCategory"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean"
-                }
-            }
-        },
         "response.PostResponse": {
             "type": "object",
             "properties": {
@@ -2571,11 +2798,11 @@ const docTemplate = `{
                 }
             }
         },
-        "response.PublicPostsByCategoryResponse": {
+        "response.PublicPostsByTagResponse": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/public.PostCategoryWithPost"
+                    "$ref": "#/definitions/public.TagWithPost"
                 },
                 "limit": {
                     "type": "integer"
@@ -2657,6 +2884,32 @@ const docTemplate = `{
                 }
             }
         },
+        "response.RolesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dashboard.Role"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.SyncPermissionResponse": {
             "type": "object",
             "properties": {
@@ -2668,6 +2921,46 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "boolean"
+                }
+            }
+        },
+        "response.TagResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dashboard.Tag"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "response.TagsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dashboard.Tag"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
@@ -2727,8 +3020,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "SQLX GoFiber Boilerplate API",
-	Description:      "SQLX GoFiber Boilerplate documentation.",
+	Title:            "Rumaloka API",
+	Description:      "Rumaloka API Swag.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

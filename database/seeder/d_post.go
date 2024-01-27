@@ -41,16 +41,16 @@ func (s Seed) D_PostSeeder() {
 		log.Fatal(err)
 	}
 
-	category, err := s.db.QueryContext(context.Background(), `SELECT uuid, name, created_at, updated_at FROM post_categories`)
+	tag, err := s.db.QueryContext(context.Background(), `SELECT uuid, name, created_at, updated_at FROM tags`)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer category.Close()
-	var categories []model.PostCategory
-	for category.Next() {
-		var i model.PostCategory
-		if err := category.Scan(
+	defer tag.Close()
+	var categories []model.Tag
+	for tag.Next() {
+		var i model.Tag
+		if err := tag.Scan(
 			&i.UUID,
 			&i.Name,
 			&i.CreatedAt,
@@ -60,22 +60,25 @@ func (s Seed) D_PostSeeder() {
 		}
 		categories = append(categories, i)
 	}
-	if err := category.Close(); err != nil {
+	if err := tag.Close(); err != nil {
 		log.Fatal(err)
 	}
-	if err := category.Err(); err != nil {
+	if err := tag.Err(); err != nil {
 		log.Fatal(err)
 	}
 
 	for i := 0; i < len(users); i++ {
 		for j := 0; j < 3; j++ {
-			ShufflePostCategory(categories)
-			_, err := s.db.Exec(`INSERT INTO posts(uuid, post_category_uuid, user_uuid, title, "content", created_at) VALUES ($1,$2,$3,$4,$5,$6)`,
+			ShuffleTag(categories)
+			_, err := s.db.Exec(`INSERT INTO posts(uuid, tag_uuid, user_uuid, title, thumbnail, "content", slug, keyword, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
 				uuid.New(),
 				categories[0].UUID,
 				users[i].UUID,
 				"Title "+strconv.Itoa(i+1)+"-"+strconv.Itoa(j+1),
+				"https://4.bp.blogspot.com/-JU8lLIDYcq4/UkWR38K8pAI/AAAAAAAAQxw/Z-3UaPjKgBw/s1600/images.jpg",
 				"Post Title "+strconv.Itoa(i+1)+"-"+strconv.Itoa(j+1)+" By "+users[i].Username,
+				"title-"+strconv.Itoa(i+1)+"-"+strconv.Itoa(j+1),
+				"Title 1, Title",
 				time.Now(),
 			)
 			if err != nil {
@@ -85,7 +88,7 @@ func (s Seed) D_PostSeeder() {
 	}
 }
 
-func ShufflePostCategory(r []model.PostCategory) {
+func ShuffleTag(r []model.Tag) {
 	for i := len(r) - 1; i > 0; i-- {
 		j := rand.Intn(i + 1)
 		r[i], r[j] = r[j], r[i]

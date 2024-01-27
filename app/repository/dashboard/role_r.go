@@ -23,7 +23,7 @@ type RoleRepo struct {
 }
 
 func (repo *RoleRepo) Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Role, int, error) {
-	_select := "uuid, name, created_at, updated_at, deleted_at"
+	_select := "uuid, name, is_active, created_at, updated_at, deleted_at"
 	_conditions := database.Search([]string{"name"}, search, "roles.deleted_at")
 	_order := database.OrderBy(sort_by, sort)
 	_limit := database.Limit(limit, offset)
@@ -46,6 +46,7 @@ func (repo *RoleRepo) Index(limit int, offset uint, search string, sort_by strin
 		if err := rows.Scan(
 			&i.UUID,
 			&i.Name,
+			&i.IsActive,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
@@ -65,67 +66,71 @@ func (repo *RoleRepo) Index(limit int, offset uint, search string, sort_by strin
 }
 
 func (repo *RoleRepo) Show(UUID string) (model.ShowRole, error) {
-	var postCategory model.ShowRole
-	query := "SELECT uuid, name, created_at, updated_at, deleted_at FROM roles WHERE uuid = $1 AND roles.deleted_at IS NULL LIMIT 1"
+	var role model.ShowRole
+	query := "SELECT uuid, name, is_active, created_at, updated_at, deleted_at FROM roles WHERE uuid = $1 AND roles.deleted_at IS NULL LIMIT 1"
 	err := repo.db.QueryRowContext(context.Background(), query, UUID).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
-		&postCategory.UpdatedAt,
-		&postCategory.DeletedAt,
+		&role.UUID,
+		&role.Name,
+		&role.IsActive,
+		&role.CreatedAt,
+		&role.UpdatedAt,
+		&role.DeletedAt,
 	)
 	if err != nil {
 		return model.ShowRole{}, err
 	}
-	return postCategory, err
+	return role, err
 }
 
 func (repo *RoleRepo) Store(request *model.StoreRole) (model.Role, error) {
-	query := `INSERT INTO "roles" (uuid, name, created_at) VALUES($1, $2, $3) 
-	RETURNING uuid, name, created_at`
-	var postCategory model.Role
-	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, time.Now()).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
+	query := `INSERT INTO "roles" (uuid, name, is_active, created_at) VALUES($1, $2, $3, $4) 
+	RETURNING uuid, name, is_active, created_at`
+	var role model.Role
+	err := repo.db.QueryRowContext(context.Background(), query, uuid.New(), request.Name, request.IsActive, time.Now()).Scan(
+		&role.UUID,
+		&role.Name,
+		&role.IsActive,
+		&role.CreatedAt,
 	)
 	if err != nil {
 		return model.Role{}, err
 	}
-	return postCategory, err
+	return role, err
 }
 
 func (repo *RoleRepo) Update(UUID string, request *model.UpdateRole) (model.Role, error) {
-	query := `UPDATE "roles" SET name = $2, updated_at = $3 WHERE uuid = $1 
-	RETURNING uuid, name, created_at, updated_at`
-	var postCategory model.Role
-	err := repo.db.QueryRowContext(context.Background(), query, UUID, request.Name, time.Now()).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
-		&postCategory.UpdatedAt,
+	query := `UPDATE "roles" SET name = $2, is_active = $3, updated_at = $4 WHERE uuid = $1 
+	RETURNING uuid, name, is_active, created_at, updated_at`
+	var role model.Role
+	err := repo.db.QueryRowContext(context.Background(), query, UUID, request.Name, request.IsActive, time.Now()).Scan(
+		&role.UUID,
+		&role.Name,
+		&role.IsActive,
+		&role.CreatedAt,
+		&role.UpdatedAt,
 	)
 	if err != nil {
 		return model.Role{}, err
 	}
-	return postCategory, err
+	return role, err
 }
 
 func (repo *RoleRepo) Destroy(UUID string) (model.Role, error) {
 	query := `UPDATE "roles" SET updated_at = $2, deleted_at = $3 WHERE uuid = $1 
-	RETURNING uuid, name, created_at, updated_at, deleted_at`
-	var postCategory model.Role
+	RETURNING uuid, name, is_active, created_at, updated_at, deleted_at`
+	var role model.Role
 	err := repo.db.QueryRowContext(context.Background(), query, UUID, time.Now(), time.Now()).Scan(
-		&postCategory.UUID,
-		&postCategory.Name,
-		&postCategory.CreatedAt,
-		&postCategory.UpdatedAt,
-		&postCategory.DeletedAt,
+		&role.UUID,
+		&role.Name,
+		&role.IsActive,
+		&role.CreatedAt,
+		&role.UpdatedAt,
+		&role.DeletedAt,
 	)
 	if err != nil {
 		return model.Role{}, err
 	}
-	return postCategory, err
+	return role, err
 }
 
 func NewRoleRepo(db *database.DB) RoleRepository {

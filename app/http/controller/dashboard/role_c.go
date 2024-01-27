@@ -22,7 +22,7 @@ import (
 // @Param search query string false "Search"
 // @Param sort_by query string false "Sort By" Enums(id, name)
 // @Param sort query string false "Sort" Enums(ASC, DESC)
-// @Success 200 {object} response.PostCategoriesResponse
+// @Success 200 {object} response.TagsResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
 // @Router /api/v1/dashboard/role [get]
@@ -46,7 +46,7 @@ func RoleIndex(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path string true "Role ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
-// @Success 200 {object} response.RoleResponse
+// @Success 200 {object} response.RolesResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
 // @Router /api/v1/dashboard/role/{id} [get]
@@ -74,6 +74,7 @@ func RoleShow(c *fiber.Ctx) error {
 // @Accept multipart/form-data
 // @Produce json
 // @Param name formData string true "Name" default(Role Name)
+// @Param is_active formData bool true "Is Active"
 // @Success 200 {object} response.RoleResponse
 // @Failure 400,401,403 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth
@@ -103,6 +104,7 @@ func RoleStore(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path string true "Role ID" default(22863142-1cfe-48cc-9640-ea88926429a4)
 // @Param name formData string true "Name" default(Role Name Update)
+// @Param is_active formData bool true "Is Active"
 // @Success 200 {object} response.RoleResponse
 // @Failure 400,401,403,404 {object} response.ErrorResponse "Error"
 // @Security ApiKeyAuth

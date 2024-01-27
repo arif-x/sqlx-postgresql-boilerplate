@@ -9,7 +9,7 @@ import (
 // Swagger Config
 // @title SQLX GoFiber Boilerplate API
 // @version 1.0
-// @description SQLX GoFiber Boilerplate documentation.
+// @description SQLX GoFiber Boilerplate API Swag.
 // @host localhost:8080
 // @BasePath /
 // @securityDefinitions.apikey ApiKeyAuth

@@ -7,7 +7,7 @@ import (
 )
 
 func Dashboard(a *fiber.App) {
-	dashboard := a.Group("/api/v1/dashboard", middleware.JWTProtected())
+	dashboard := a.Group("/api/v1/dashboard", middleware.JWTProtected(), middleware.Email(), middleware.IsActive())
 
 	user := dashboard.Group("/user")
 	user.Get("/", middleware.Permission("user-index"), controllers.UserIndex)
@@ -16,12 +16,12 @@ func Dashboard(a *fiber.App) {
 	user.Put("/:id", middleware.Permission("user-update"), controllers.UserUpdate)
 	user.Delete("/:id", middleware.Permission("user-destroy"), controllers.UserDestroy)
 
-	post_category := dashboard.Group("/post-category")
-	post_category.Get("/", middleware.Permission("post-category-index"), controllers.PostCategoryIndex)
-	post_category.Get("/:id", middleware.Permission("post-category-show"), controllers.PostCategoryShow)
-	post_category.Post("/", middleware.Permission("post-category-store"), controllers.PostCategoryStore)
-	post_category.Put("/:id", middleware.Permission("post-category-update"), controllers.PostCategoryUpdate)
-	post_category.Delete("/:id", middleware.Permission("post-category-destroy"), controllers.PostCategoryDestroy)
+	tag := dashboard.Group("/tags")
+	tag.Get("/", middleware.Permission("tags-index"), controllers.TagIndex)
+	tag.Get("/:id", middleware.Permission("tags-show"), controllers.TagShow)
+	tag.Post("/", middleware.Permission("tags-store"), controllers.TagStore)
+	tag.Put("/:id", middleware.Permission("tags-update"), controllers.TagUpdate)
+	tag.Delete("/:id", middleware.Permission("tags-destroy"), controllers.TagDestroy)
 
 	post := dashboard.Group("/post")
 	post.Get("/", middleware.Permission("post-index"), controllers.PostIndex)

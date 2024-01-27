@@ -31,19 +31,19 @@ type UsersResponse struct {
 	Total   int              `json:"total"`
 }
 
-type PostCategoryResponse struct {
-	Status  bool                   `json:"status"`
-	Message string                 `json:"message"`
-	Data    dashboard.PostCategory `json:"data"`
+type TagResponse struct {
+	Status  bool          `json:"status"`
+	Message string        `json:"message"`
+	Data    dashboard.Tag `json:"data"`
 }
 
-type PostCategoriesResponse struct {
-	Status  bool                     `json:"status"`
-	Message string                   `json:"message"`
-	Data    []dashboard.PostCategory `json:"data"`
-	Limit   int                      `json:"limit"`
-	Page    int                      `json:"page"`
-	Total   int                      `json:"total"`
+type TagsResponse struct {
+	Status  bool            `json:"status"`
+	Message string          `json:"message"`
+	Data    []dashboard.Tag `json:"data"`
+	Limit   int             `json:"limit"`
+	Page    int             `json:"page"`
+	Total   int             `json:"total"`
 }
 
 type PostResponse struct {
@@ -106,13 +106,13 @@ type PublicPostsResponse struct {
 	Total   int           `json:"total"`
 }
 
-type PublicPostsByCategoryResponse struct {
-	Status  bool                        `json:"status"`
-	Message string                      `json:"message"`
-	Data    public.PostCategoryWithPost `json:"data"`
-	Limit   int                         `json:"limit"`
-	Page    int                         `json:"page"`
-	Total   int                         `json:"total"`
+type PublicPostsByTagResponse struct {
+	Status  bool               `json:"status"`
+	Message string             `json:"message"`
+	Data    public.TagWithPost `json:"data"`
+	Limit   int                `json:"limit"`
+	Page    int                `json:"page"`
+	Total   int                `json:"total"`
 }
 
 type PublicPostsByUserResponse struct {

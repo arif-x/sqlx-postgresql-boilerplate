@@ -7,11 +7,12 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s Seed) C_PostCategory() {
+func (s Seed) C_Tag() {
 	for i := 0; i < 3; i++ {
-		_, err := s.db.Exec(`INSERT INTO post_categories(uuid, name, created_at) VALUES ($1,$2,$3)`,
+		_, err := s.db.Exec(`INSERT INTO tags(uuid, name, slug, created_at) VALUES ($1,$2,$3,$4)`,
 			uuid.New(),
-			"Category "+strconv.Itoa(i+1),
+			"Tag "+strconv.Itoa(i+1),
+			"tag-"+strconv.Itoa(i+1),
 			time.Now(),
 		)
 		if err != nil {

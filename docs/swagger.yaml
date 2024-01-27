@@ -365,8 +365,8 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Rumaloka API Swag.
-  title: Rumaloka API
+  description: SQLX GoFiber Boilerplate API Swag.
+  title: SQLX GoFiber Boilerplate API
   version: "1.0"
 paths:
   /api/v1/auth/login:

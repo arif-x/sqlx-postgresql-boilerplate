@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Rumaloka API Swag.",
-        "title": "Rumaloka API",
+        "description": "SQLX GoFiber Boilerplate API Swag.",
+        "title": "SQLX GoFiber Boilerplate API",
         "contact": {},
         "version": "1.0"
     },

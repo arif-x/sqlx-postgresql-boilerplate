@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
+	"github.com/arif-x/sqlx-gofiber-boilerplate/cmd"
 	_ "github.com/arif-x/sqlx-gofiber-boilerplate/docs"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/server"
 )
 
 // Swagger Config
@@ -16,6 +15,5 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	config.LoadAllConfigs(".env")
-	server.Serve()
+	cmd.Execute()
 }

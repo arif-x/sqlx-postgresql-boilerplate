@@ -185,6 +185,19 @@ definitions:
       status:
         type: boolean
     type: object
+  response.AuthWithPermissionResponse:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      permission:
+        items:
+          type: string
+        type: array
+      status:
+        type: boolean
+    type: object
   response.ErrorResponse:
     properties:
       message:
@@ -369,6 +382,86 @@ info:
   title: SQLX GoFiber Boilerplate API
   version: "1.0"
 paths:
+  /api/v1/auth/change-forgot-password:
+    post:
+      consumes:
+      - multipart/form-data
+      description: change password from forgot password.
+      parameters:
+      - description: New Password
+        format: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthWithPermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: change password from forgot password.
+      tags:
+      - Auth
+  /api/v1/auth/check-forgot-password-token/{token}:
+    get:
+      consumes:
+      - multipart/form-data
+      description: check token validity to recover password.
+      parameters:
+      - default: 349af788-7702-442a-ae44-6dd6435b1339
+        description: Forgot Password Token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthWithPermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: check token validity to recover password.
+      tags:
+      - Auth
   /api/v1/auth/login:
     post:
       consumes:
@@ -392,7 +485,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.AuthResponse'
+            $ref: '#/definitions/response.AuthWithPermissionResponse'
         "400":
           description: Error
           schema:
@@ -445,7 +538,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.AuthResponse'
+            $ref: '#/definitions/response.AuthWithPermissionResponse'
         "400":
           description: Error
           schema:
@@ -498,6 +591,44 @@ paths:
       summary: user send verificationemail.
       tags:
       - Auth
+  /api/v1/auth/send-password-email:
+    post:
+      consumes:
+      - multipart/form-data
+      description: user send email to recover password.
+      parameters:
+      - default: superadmin
+        description: Email/Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthWithPermissionResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: user send email to recover password.
+      tags:
+      - Auth
   /api/v1/auth/verify/{token}:
     get:
       consumes:
@@ -516,7 +647,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.AuthResponse'
+            $ref: '#/definitions/response.AuthWithPermissionResponse'
         "400":
           description: Error
           schema:

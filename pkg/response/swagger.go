@@ -11,6 +11,13 @@ type AuthResponse struct {
 	Data    string `json:"data"`
 }
 
+type AuthWithPermissionResponse struct {
+	Status     bool     `json:"status"`
+	Message    string   `json:"message"`
+	Data       string   `json:"data"`
+	Permission []string `json:"permission"`
+}
+
 type ErrorResponse struct {
 	Status  bool   `json:"status" example:"false"`
 	Message string `json:"message"`

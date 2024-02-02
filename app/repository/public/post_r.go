@@ -12,7 +12,7 @@ type PostRepository interface {
 	Index(limit int, offset uint, search string, sort_by string, sort string) ([]model.Post, int, error)
 	TagPost(slug string, limit int, offset uint, search string, sort_by string, sort string) (model.TagWithPost, int, error)
 	UserPost(username string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error)
-	Show(slug string) (model.Post, error)
+	Show(slug string) (model.PostSingle, error)
 }
 
 type PostRepo struct {
@@ -35,7 +35,7 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
     posts.updated_at,
 	CASE 
     	WHEN users.uuid IS NULL THEN null
-    	ELSE json_build_object(
+    	ELSE jsonb_build_object(
         	'uuid', users.uuid,
         	'name', users.name,
         	'username', users.username,
@@ -46,7 +46,7 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	END AS user,
 	CASE 
     	WHEN tags.uuid IS NULL THEN null
-		ELSE json_build_object(
+		ELSE jsonb_build_object(
         	'uuid', tags.uuid,
         	'name', tags.name,
         	'created_at', tags.created_at,
@@ -55,10 +55,10 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	END AS tag
 	`
 	_conditions := database.Search([]string{"title", "content", "users.name", "tags.name"}, search, "posts.deleted_at")
-	_order := database.OrderBy("posts.id", sort)
+	_order := database.OrderBy(sort_by, sort)
 	_limit := database.Limit(limit, offset)
 
-	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN tags ON tags.uuid = posts.tag_uuid %s AND deleted_at IS NULL`, _conditions)
+	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN tags ON tags.uuid = posts.tag_uuid %s AND posts.deleted_at IS NULL`, _conditions)
 	var count int
 	_ = repo.db.QueryRow(count_query).Scan(&count)
 
@@ -101,73 +101,86 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 		return nil, 0, err
 	}
 
+	if items == nil {
+		return []model.Post{}, count, nil
+	}
+
 	return items, count, nil
 }
 
 func (repo *PostRepo) TagPost(slug string, limit int, offset uint, search string, sort_by string, sort string) (model.TagWithPost, int, error) {
 	_limit := database.Limit(limit, offset)
+	_conditions := database.SearchOther([]string{"title", "content", "users.name"}, search, "posts.deleted_at")
+	_order := database.OrderBy(sort_by, sort)
 	_select := fmt.Sprintf(`
 	tags.uuid,
     tags.name,
 	tags.slug,
     COALESCE(
-        (
-            SELECT json_agg(
-                json_build_object(
-                    'uuid', posts.uuid,
-                    'tag_uuid', posts.tag_uuid,
-                    'user_uuid', posts.user_uuid,
-                    'title', posts.title,
-                    'thumbnail', posts.thumbnail,
-					'content', posts.content,
-					'keyword', posts.keyword,
-					'slug', posts.slug,
-					'is_active', posts.is_active,
-					'is_highlight', posts.is_highlight,
-                    'user', CASE 
-                        WHEN user_uuid_u IS NULL THEN null
-                            ELSE json_build_object(
-                                    'uuid', user_uuid_u,
-                                    'name', user_name,
-                                    'username', user_username,
-                                    'email', user_email,
-                                    'created_at', user_created_at,
-                                    'updated_at', user_updated_at
-                            )
-                        END,
-                    'tag', CASE 
-                        WHEN tag_uuid_u IS NULL THEN null
-                            ELSE json_build_object(
-                                    'uuid', tag_uuid_u,
-                                    'name', tag_name,
-									'slug', tag_slug,
-                                    'created_at', tag_created_at,
-                                    'updated_at', tag_updated_at
-                            )
-                        END
-                )
-            ) 
-            FROM (SELECT 
-            	posts.*, 
-            	users.uuid as user_uuid_u, users.name as user_name, users.username as user_username, users.email as user_email, users.created_at as user_created_at, users.updated_at as user_updated_at, 
-            	tags.uuid as tag_uuid_u, tags.name as tag_name, tags.slug as tag_slug, tags.created_at as tag_created_at, tags.updated_at as tag_updated_at 
-            	FROM posts
-	            LEFT JOIN users ON users.uuid = posts.user_uuid
-	            LEFT JOIN tags ON tags.uuid = posts.tag_uuid
-	            WHERE tags.slug = $1 AND posts.is_active = true AND posts.deleted_at IS NULL 
-	            %s
-            ) posts
-        ), '[]'
-	) AS post,
+		CASE 
+			WHEN COUNT(posts.uuid) > 0 THEN
+				json_agg(
+					DISTINCT jsonb_build_object(
+						'uuid', posts.uuid,
+						'tag_uuid', posts.tag_uuid,
+						'user_uuid', posts.user_uuid,
+						'title', posts.title,
+						'thumbnail', posts.thumbnail,
+						'content', posts.content,
+						'keyword', posts.keyword,
+						'slug', posts.slug,
+						'is_active', posts.is_active,
+						'is_highlight', posts.is_highlight,
+						'user', CASE 
+							WHEN user_uuid_u IS NULL THEN null
+							ELSE jsonb_build_object(
+								'uuid', user_uuid_u,
+								'name', user_name,
+								'username', user_username,
+								'email', user_email,
+								'created_at', user_created_at,
+								'updated_at', user_updated_at
+							)
+						END,
+						'tag', CASE 
+							WHEN tag_uuid_u IS NULL THEN null
+							ELSE jsonb_build_object(
+								'uuid', tag_uuid_u,
+								'name', tag_name,
+								'slug', tag_slug,
+								'created_at', tag_created_at,
+								'updated_at', tag_updated_at
+							)
+						END
+					)
+				)
+			ELSE
+				'[]'
+		END
+	, '[]') AS post,	
     tags.created_at,
     tags.updated_at
-	`, _limit)
+	`)
 
-	count_query := `SELECT count(*) FROM posts JOIN tags ON tags.uuid = posts.tag_uuid WHERE tags.slug = $1 AND posts.is_active = true AND posts.deleted_at IS NULL`
+	count_query := fmt.Sprintf(`SELECT count(*) FROM posts LEFT JOIN tags ON tags.uuid = posts.tag_uuid LEFT JOIN users ON users.uuid = posts.user_uuid WHERE tags.slug = $1 AND posts.is_active = true AND posts.deleted_at IS NULL %s`, _conditions)
 	var count int
 	_ = repo.db.QueryRow(count_query, slug).Scan(&count)
 
-	query := fmt.Sprintf(`SELECT %s FROM tags WHERE tags.slug = $1 AND tags.is_active = true`, _select)
+	query := fmt.Sprintf(`SELECT %s FROM tags 
+	LEFT JOIN (
+		SELECT 
+			posts.*, 
+            users.uuid as user_uuid_u, users.name as user_name, users.username as user_username, users.email as user_email, users.created_at as user_created_at, users.updated_at as user_updated_at, 
+        	tags.uuid as tag_uuid_u, tags.name as tag_name, tags.slug as tag_slug, tags.created_at as tag_created_at, tags.updated_at as tag_updated_at 
+    	FROM posts
+	    LEFT JOIN users ON users.uuid = posts.user_uuid
+	    LEFT JOIN tags ON tags.uuid = posts.tag_uuid
+	    WHERE tags.slug = $1 AND posts.is_active = true %s
+	    %s %s
+	) as posts ON posts.tag_uuid = tags.uuid
+	WHERE tags.slug = $1 AND tags.is_active = true
+	GROUP BY tags.uuid, tags.name, tags.slug, tags.created_at, tags.updated_at
+	`, _select, _conditions, _order, _limit)
 
 	var items model.TagWithPost
 
@@ -189,69 +202,79 @@ func (repo *PostRepo) TagPost(slug string, limit int, offset uint, search string
 
 func (repo *PostRepo) UserPost(username string, limit int, offset uint, search string, sort_by string, sort string) (model.UserWithPost, int, error) {
 	_limit := database.Limit(limit, offset)
+	_conditions := database.SearchOther([]string{"title", "content", "users.name"}, search, "posts.deleted_at")
+	_order := database.OrderBy(sort_by, sort)
 	_select := fmt.Sprintf(`
 	users.uuid,
     users.name,
     users.username,
     users.email,
     COALESCE(
-        (
-            SELECT json_agg(
-                json_build_object(
-                    'uuid', posts.uuid,
-                    'tag_uuid', posts.tag_uuid,
-                    'user_uuid', posts.user_uuid,
-                    'title', posts.title,
-                    'thumbnail', posts.thumbnail,
-					'content', posts.content,
-					'keyword', posts.keyword,
-					'slug', posts.slug,
-					'is_active', posts.is_active,
-					'is_highlight', posts.is_highlight,
-                    'user', CASE 
-                        WHEN user_uuid_u IS NULL THEN null
-                            ELSE json_build_object(
-                                    'uuid', user_uuid_u,
-                                    'name', user_name,
-                                    'username', user_username,
-                                    'email', user_email,
-                                    'created_at', user_created_at,
-                                    'updated_at', user_updated_at
-                            )
-                        END,
-                    'tag', CASE 
-                        WHEN tag_uuid_u IS NULL THEN null
-                            ELSE json_build_object(
-                                    'uuid', tag_uuid_u,
-                                    'name', tag_name,
-									'slug', tag_slug,
-                                    'created_at', tag_created_at,
-                                    'updated_at', tag_updated_at
-                            )
-                        END
-                )
-            ) 
-            FROM (SELECT 
-            	posts.*, 
-            	users.uuid as user_uuid_u, users.name as user_name, users.username as user_username, users.email as user_email, users.created_at as user_created_at, users.updated_at as user_updated_at, 
-            	tags.uuid as tag_uuid_u, tags.name as tag_name, tags.slug as tag_slug, tags.created_at as tag_created_at, tags.updated_at as tag_updated_at 
-            	FROM posts
-	            LEFT JOIN users ON users.uuid = posts.user_uuid
-	            LEFT JOIN tags ON tags.uuid = posts.tag_uuid 
-	            WHERE username = $1 AND posts.is_active = true AND posts.deleted_at IS NULL 
-	            %s
-            ) posts
-        ), '[]'
-	) AS post,
+		CASE 
+			WHEN COUNT(posts.uuid) > 0 THEN
+				json_agg(
+					DISTINCT jsonb_build_object(
+						'uuid', posts.uuid,
+						'tag_uuid', posts.tag_uuid,
+						'user_uuid', posts.user_uuid,
+						'title', posts.title,
+						'thumbnail', posts.thumbnail,
+						'content', posts.content,
+						'keyword', posts.keyword,
+						'slug', posts.slug,
+						'is_active', posts.is_active,
+						'is_highlight', posts.is_highlight,
+						'user', CASE 
+							WHEN user_uuid_u IS NULL THEN null
+							ELSE jsonb_build_object(
+								'uuid', user_uuid_u,
+								'name', user_name,
+								'username', user_username,
+								'email', user_email,
+								'created_at', user_created_at,
+								'updated_at', user_updated_at
+							)
+						END,
+						'tag', CASE 
+							WHEN tag_uuid_u IS NULL THEN null
+							ELSE jsonb_build_object(
+								'uuid', tag_uuid_u,
+								'name', tag_name,
+								'slug', tag_slug,
+								'created_at', tag_created_at,
+								'updated_at', tag_updated_at
+							)
+						END
+					)
+				)
+			ELSE
+				'[]'
+		END
+	, '[]') AS post,
+	
     users.created_at,
     users.updated_at
-	`, _limit)
+	`)
 
-	count_query := `SELECT count(*) FROM posts JOIN users ON users.uuid = posts.user_uuid WHERE username = $1 AND posts.is_active = true AND posts.deleted_at IS NULL`
+	count_query := fmt.Sprintf(`SELECT count(*) FROM posts JOIN users ON users.uuid = posts.user_uuid WHERE username = $1 AND posts.is_active = true AND posts.deleted_at IS NULL %s`, _conditions)
 	var count int
 	_ = repo.db.QueryRow(count_query, username).Scan(&count)
 
-	query := fmt.Sprintf(`SELECT %s FROM users WHERE username = $1`, _select)
+	query := fmt.Sprintf(`SELECT %s FROM users
+	LEFT JOIN (
+		SELECT 
+			posts.*, 
+            users.uuid as user_uuid_u, users.name as user_name, users.username as user_username, users.email as user_email, users.created_at as user_created_at, users.updated_at as user_updated_at, 
+        	tags.uuid as tag_uuid_u, tags.name as tag_name, tags.slug as tag_slug, tags.created_at as tag_created_at, tags.updated_at as tag_updated_at 
+    	FROM posts
+	    LEFT JOIN users ON users.uuid = posts.user_uuid
+	    LEFT JOIN tags ON tags.uuid = posts.tag_uuid
+	    WHERE users.username = $1 AND posts.is_active = true %s
+	    %s %s
+	) as posts ON posts.user_uuid = users.uuid
+	WHERE username = $1
+	GROUP BY users.uuid, users.name, users.username, users.email, users.created_at, users.updated_at
+	`, _select, _conditions, _order, _limit)
 
 	var items model.UserWithPost
 
@@ -272,8 +295,8 @@ func (repo *PostRepo) UserPost(username string, limit int, offset uint, search s
 	return items, count, nil
 }
 
-func (repo *PostRepo) Show(slug string) (model.Post, error) {
-	var post model.Post
+func (repo *PostRepo) Show(slug string) (model.PostSingle, error) {
+	var post model.PostSingle
 	query := `
 	SELECT 
 	posts.uuid,
@@ -290,7 +313,7 @@ func (repo *PostRepo) Show(slug string) (model.Post, error) {
     posts.updated_at,
 	CASE 
     	WHEN users.uuid IS NULL THEN null
-    	ELSE json_build_object(
+    	ELSE jsonb_build_object(
         	'uuid', users.uuid,
         	'name', users.name,
         	'username', users.username,
@@ -301,7 +324,7 @@ func (repo *PostRepo) Show(slug string) (model.Post, error) {
 	END AS user,
 	CASE 
     	WHEN tags.uuid IS NULL THEN null
-		ELSE json_build_object(
+		ELSE jsonb_build_object(
         	'uuid', tags.uuid,
         	'name', tags.name,
 			'slug', tags.slug,
@@ -329,6 +352,88 @@ func (repo *PostRepo) Show(slug string) (model.Post, error) {
 		&post.User,
 		&post.Tag,
 	)
+
+	if err != nil {
+		return model.PostSingle{}, err
+	}
+
+	similiar_query := `
+	SELECT 
+	posts.uuid,
+	user_uuid,
+	tag_uuid,
+    title,
+    thumbnail,
+    content,
+	keyword,
+	posts.slug,
+	posts.is_active,
+	is_highlight,
+    posts.created_at,
+    posts.updated_at,
+	CASE 
+    	WHEN users.uuid IS NULL THEN null
+    	ELSE jsonb_build_object(
+        	'uuid', users.uuid,
+        	'name', users.name,
+        	'username', users.username,
+        	'email', users.email,
+        	'created_at', users.created_at,
+        	'updated_at', users.updated_at
+    	)
+	END AS user,
+	CASE 
+    	WHEN tags.uuid IS NULL THEN null
+		ELSE jsonb_build_object(
+        	'uuid', tags.uuid,
+        	'name', tags.name,
+			'slug', tags.slug,
+        	'created_at', tags.created_at,
+        	'updated_at', tags.updated_at
+		)
+	END AS tag
+	FROM posts LEFT JOIN users ON users.uuid = posts.user_uuid LEFT JOIN tags ON tags.uuid = posts.tag_uuid
+	WHERE posts.title LIKE $1 AND posts.slug != $2 AND posts.is_active = true AND posts.deleted_at IS NULL LIMIT 5
+	`
+
+	rows, err := repo.db.QueryContext(context.Background(), similiar_query, "%"+post.Title+"%", post.Slug)
+	if err != nil {
+		return post, err
+	}
+
+	defer rows.Close()
+	var items []*model.Post
+	for rows.Next() {
+		var i model.Post
+		err := rows.Scan(
+			&i.UUID,
+			&i.TagUUID,
+			&i.UserUUID,
+			&i.Title,
+			&i.Thumbnail,
+			&i.Content,
+			&i.Keyword,
+			&i.Slug,
+			&i.IsActive,
+			&i.IsHighlight,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.User,
+			&i.Tag,
+		)
+		if err != nil {
+			return post, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Close(); err != nil {
+		return post, err
+	}
+	if err := rows.Err(); err != nil {
+		return post, err
+	}
+
+	post.Similiar = items
 
 	return post, err
 }

@@ -9,6 +9,7 @@ import (
 func (s Seed) A_Role() {
 	var arr = []string{
 		"Superadmin",
+		"Verified",
 		"Inactive",
 	}
 	for i := 0; i < len(arr); i++ {

@@ -48,3 +48,12 @@ type RoleHasPermission struct {
 	RoleUUID       uuid.UUID `db:"role_uuid" json:"role_uuid"`
 	PermissionUUID uuid.UUID `db:"permission_uuid" json:"permission_uuid"`
 }
+
+type ForgotPassword struct {
+	Username string `json:"username" form:"username"`
+}
+
+type ChangeForgotPassword struct {
+	Token    string `json:"token" form:"token"`
+	Password string `json:"password" form:"password"`
+}

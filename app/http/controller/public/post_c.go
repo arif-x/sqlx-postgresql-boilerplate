@@ -21,6 +21,11 @@ import (
 // @Router /api/v1/public/post [get]
 func PostIndex(c *fiber.Ctx) error {
 	page, limit, search, sort_by, sort := paginate.Paginate(c)
+
+	if sort_by == "id" {
+		sort_by = "posts.id"
+	}
+
 	repository := repo.NewPostRepo(database.GetDB())
 
 	posts, count, err := repository.Index(limit, uint(limit*(page-1)), search, sort_by, sort)

@@ -1,15 +1,24 @@
 package response
 
 import (
+	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
 	"github.com/gofiber/fiber/v2"
 )
 
 func InternalServerError(c *fiber.Ctx, err error) error {
-	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		"status":  false,
-		"message": err,
-		"data":    nil,
-	})
+	if config.AppCfg().Debug == false {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  false,
+			"message": "Internal Server Error",
+			"data":    nil,
+		})
+	} else {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  false,
+			"message": err,
+			"data":    nil,
+		})
+	}
 }
 
 func BadRequest(c *fiber.Ctx, err error) error {
@@ -44,6 +53,24 @@ func Index(c *fiber.Ctx, page int, limit int, count int, data interface{}) error
 		"limit":   limit,
 		"total":   count,
 		"data":    data,
+	})
+}
+
+func IndexWithNextPage(c *fiber.Ctx, page int, limit int, count int, data interface{}) error {
+	var next *int
+	next_page := page + 1
+	next = &next_page
+	if page*limit > count {
+		next = nil
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":    true,
+		"message":   "Fetched",
+		"page":      page,
+		"next_page": next,
+		"limit":     limit,
+		"total":     count,
+		"data":      data,
 	})
 }
 

@@ -1,6 +1,7 @@
 package seeder
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -11,7 +12,7 @@ import (
 	hash "github.com/arif-x/sqlx-gofiber-boilerplate/pkg/hash"
 )
 
-func (s Seed) B_UserSeeder() {
+func (s Seed) UserSeeder() {
 	password, _ := hash.Hash([]byte("password"))
 
 	superadmin_q := "SELECT uuid FROM roles WHERE name = 'Superadmin' LIMIT 1"
@@ -48,4 +49,6 @@ func (s Seed) B_UserSeeder() {
 			log.Fatal(err)
 		}
 	}
+
+	fmt.Println("User has successfully seeded")
 }

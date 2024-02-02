@@ -12,7 +12,6 @@ import (
 	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
 	seeds "github.com/arif-x/sqlx-gofiber-boilerplate/database/seeder"
 	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/server"
-	seeders "github.com/danvergara/seeder"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 )
@@ -38,11 +37,9 @@ func SeedFunc() {
 		log.Fatalf("error opening a connection with the database %s\n", err)
 	}
 
-	s := seeds.NewSeed(db)
-
-	if err := seeders.Execute(s); err != nil {
-		log.Fatalf("error seeding the db %s\n", err)
-	}
+	seed := seeds.NewSeed(db)
+	seed.PopulateDB()
+	fmt.Println("Database seeder has successfully executed")
 }
 
 func MigrateMake(fileName string) {

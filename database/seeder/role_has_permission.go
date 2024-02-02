@@ -2,13 +2,14 @@ package seeder
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
 	"github.com/google/uuid"
 )
 
-func (s Seed) F_role_has_permission() {
+func (s Seed) RoleHasPermission() {
 	superadmin_q := "SELECT uuid FROM roles WHERE name = 'Superadmin' LIMIT 1"
 	var superadmin_role_uuid uuid.UUID
 	_ = s.db.QueryRow(superadmin_q).Scan(&superadmin_role_uuid)
@@ -48,4 +49,6 @@ func (s Seed) F_role_has_permission() {
 			log.Fatal(err)
 		}
 	}
+
+	fmt.Println("Role has permission has successfully seeded")
 }

@@ -2,6 +2,7 @@ package seeder
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -12,7 +13,7 @@ import (
 	"time"
 )
 
-func (s Seed) D_PostSeeder() {
+func (s Seed) PostSeeder() {
 	user, err := s.db.QueryContext(context.Background(), `SELECT uuid, name, email, username, created_at, updated_at FROM users`)
 	if err != nil {
 		log.Fatal(err)
@@ -86,6 +87,8 @@ func (s Seed) D_PostSeeder() {
 			}
 		}
 	}
+
+	fmt.Println("Post has successfully seeded")
 }
 
 func ShuffleTag(r []model.Tag) {

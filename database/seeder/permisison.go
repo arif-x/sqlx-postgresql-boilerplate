@@ -1,12 +1,13 @@
 package seeder
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-func (s Seed) E_permission() {
+func (s Seed) Permission() {
 	var arr = []string{
 		"role-index", "role-show", "role-store", "role-update", "role-destroy",
 		"permission-index", "permission-show", "permission-store", "permission-update", "permission-destroy",
@@ -25,4 +26,6 @@ func (s Seed) E_permission() {
 			panic(err)
 		}
 	}
+
+	fmt.Println("Permission has successfully seeded")
 }

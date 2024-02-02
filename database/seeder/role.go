@@ -1,12 +1,13 @@
 package seeder
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-func (s Seed) A_Role() {
+func (s Seed) Role() {
 	var arr = []string{
 		"Superadmin",
 		"Verified",
@@ -22,4 +23,6 @@ func (s Seed) A_Role() {
 			panic(err)
 		}
 	}
+
+	fmt.Println("Role has successfully seeded")
 }

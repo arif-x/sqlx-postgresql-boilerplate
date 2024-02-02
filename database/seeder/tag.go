@@ -1,13 +1,14 @@
 package seeder
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-func (s Seed) C_Tag() {
+func (s Seed) Tag() {
 	for i := 0; i < 3; i++ {
 		_, err := s.db.Exec(`INSERT INTO tags(uuid, name, slug, created_at) VALUES ($1,$2,$3,$4)`,
 			uuid.New(),
@@ -19,4 +20,6 @@ func (s Seed) C_Tag() {
 			panic(err)
 		}
 	}
+
+	fmt.Println("Tag has successfully seeded")
 }

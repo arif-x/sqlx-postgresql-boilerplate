@@ -122,7 +122,7 @@ func MakeController(fileName string) {
 		return
 	}
 
-	filePath := filepath.Join(dir, filepath.Base(fileName))
+	filePath := filepath.Join(dir, filepath.Base(fileName)+".go")
 
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		fmt.Printf("File %s already exists.\n", filePath)
@@ -178,7 +178,7 @@ func MakeMiddleware(fileName string) {
 		return
 	}
 
-	filePath := filepath.Join(dir, filepath.Base(fileName))
+	filePath := filepath.Join(dir, filepath.Base(fileName)+".go")
 
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		fmt.Printf("File %s already exists.\n", filePath)
@@ -234,7 +234,7 @@ func MakeModel(fileName string) {
 		return
 	}
 
-	filePath := filepath.Join(dir, filepath.Base(fileName))
+	filePath := filepath.Join(dir, filepath.Base(fileName)+".go")
 
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		fmt.Printf("File %s already exists.\n", filePath)
@@ -290,7 +290,7 @@ func MakeRepository(fileName string) {
 		return
 	}
 
-	filePath := filepath.Join(dir, filepath.Base(fileName))
+	filePath := filepath.Join(dir, filepath.Base(fileName)+".go")
 
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		fmt.Printf("File %s already exists.\n", filePath)

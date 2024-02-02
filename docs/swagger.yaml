@@ -378,8 +378,8 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: SQLX GoFiber Boilerplate API Swag.
-  title: SQLX GoFiber Boilerplate API
+  description: SQLX PostgreSQL Boilerplate API Swag.
+  title: SQLX PostgreSQL Boilerplate API
   version: "1.0"
 paths:
   /api/v1/auth/change-forgot-password:

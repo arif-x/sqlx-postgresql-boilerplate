@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "SQLX GoFiber Boilerplate API Swag.",
-        "title": "SQLX GoFiber Boilerplate API",
+        "description": "SQLX PostgreSQL Boilerplate API Swag.",
+        "title": "SQLX PostgreSQL Boilerplate API",
         "contact": {},
         "version": "1.0"
     },

@@ -43,7 +43,6 @@ require (
 
 require (
 	github.com/arsmn/fiber-swagger/v2 v2.31.1
-	github.com/danvergara/seeder v0.5.0
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gofiber/fiber v1.14.6
 	github.com/gofiber/fiber/v2 v2.51.0

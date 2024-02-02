@@ -15,5 +15,10 @@ Todo List
 - Memory leaks vurnerable
 - Can be make server hiccup
 
-# Command List
-- Just run `go run main.go` to see all available command
+# Commands
+- For Linux/Mac:
+    - Just run `./boilerplate` to see all available commands
+    - Just run `./boilerplate type_command_here` to run the command
+- For Windows:
+    - Just run `boilerplate` to see all available commands
+    - Just run `boilerplate type_command_here` to run the command

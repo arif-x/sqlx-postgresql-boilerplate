@@ -1,7 +1,7 @@
 package dashboard
 
 import (
-	jsonutil "github.com/arif-x/sqlx-gofiber-boilerplate/pkg/json"
+	jsonutil "github.com/arif-x/sqlx-postgresql-boilerplate/pkg/json"
 	"github.com/google/uuid"
 )
 

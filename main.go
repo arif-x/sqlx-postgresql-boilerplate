@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/arif-x/sqlx-gofiber-boilerplate/cmd"
-	_ "github.com/arif-x/sqlx-gofiber-boilerplate/docs"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/cmd"
+	_ "github.com/arif-x/sqlx-postgresql-boilerplate/docs"
 )
 
 // Swagger Config
-// @title SQLX GoFiber Boilerplate API
+// @title SQLX PostgreSQL Boilerplate API
 // @version 1.0
-// @description SQLX GoFiber Boilerplate API Swag.
+// @description SQLX PostgreSQL Boilerplate API Swag.
 // @host localhost:8080
 // @BasePath /
 // @securityDefinitions.apikey ApiKeyAuth

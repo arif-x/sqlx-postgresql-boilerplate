@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/database"
+	model "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/dashboard"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/database"
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
 )

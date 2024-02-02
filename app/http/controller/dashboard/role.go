@@ -3,11 +3,11 @@ package dashboard
 import (
 	"database/sql"
 
-	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
-	repo "github.com/arif-x/sqlx-gofiber-boilerplate/app/repository/dashboard"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/database"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/paginate"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/response"
+	model "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/dashboard"
+	repo "github.com/arif-x/sqlx-postgresql-boilerplate/app/repository/dashboard"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/database"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/paginate"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/response"
 	"github.com/gofiber/fiber/v2"
 )
 

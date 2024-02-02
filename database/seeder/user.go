@@ -9,7 +9,7 @@ import (
 
 	"time"
 
-	hash "github.com/arif-x/sqlx-gofiber-boilerplate/pkg/hash"
+	hash "github.com/arif-x/sqlx-postgresql-boilerplate/pkg/hash"
 )
 
 func (s Seed) UserSeeder() {

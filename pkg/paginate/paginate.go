@@ -3,7 +3,7 @@ package paginate
 import (
 	"strconv"
 
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/logger"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/logger"
 	"github.com/gofiber/fiber/v2"
 )
 

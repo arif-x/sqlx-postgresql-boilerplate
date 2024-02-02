@@ -3,10 +3,10 @@ package public
 import (
 	"database/sql"
 
-	repo "github.com/arif-x/sqlx-gofiber-boilerplate/app/repository/public"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/database"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/paginate"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/response"
+	repo "github.com/arif-x/sqlx-postgresql-boilerplate/app/repository/public"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/database"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/paginate"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/response"
 	"github.com/gofiber/fiber/v2"
 )
 

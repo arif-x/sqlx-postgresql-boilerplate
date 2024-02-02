@@ -1,8 +1,8 @@
 package response
 
 import (
-	dashboard "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
-	public "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/public"
+	dashboard "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/dashboard"
+	public "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/public"
 )
 
 type AuthResponse struct {

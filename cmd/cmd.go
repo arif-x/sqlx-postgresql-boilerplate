@@ -9,15 +9,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
-	seeds "github.com/arif-x/sqlx-gofiber-boilerplate/database/seeder"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/server"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/config"
+	seeds "github.com/arif-x/sqlx-postgresql-boilerplate/database/seeder"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/server"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 )
 
 func PrintTextFunc() {
-	fmt.Println("SQLX GoFiber Boilerplate. \nVisit https://github.com/arif-x/sqlx-gofiber-boilerplate")
+	fmt.Println("SQLX GoFiber Boilerplate. \nVisit https://github.com/arif-x/sqlx-postgresql-boilerplate")
 }
 
 func ServeFunc() {

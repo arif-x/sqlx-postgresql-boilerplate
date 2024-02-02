@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/public"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/database"
+	model "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/public"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/database"
 )
 
 type PostRepository interface {

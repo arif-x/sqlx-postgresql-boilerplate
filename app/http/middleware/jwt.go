@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/config"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"
 	JWTTokenAuthed "github.com/golang-jwt/jwt/v4"

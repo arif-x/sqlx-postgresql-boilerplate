@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	model "github.com/arif-x/sqlx-gofiber-boilerplate/app/model/dashboard"
+	model "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/dashboard"
 	"github.com/google/uuid"
 )
 

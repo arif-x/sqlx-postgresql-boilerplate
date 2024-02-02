@@ -6,11 +6,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/arif-x/sqlx-gofiber-boilerplate/app/http/middleware"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/database"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/pkg/logger"
-	route "github.com/arif-x/sqlx-gofiber-boilerplate/route/api"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/app/http/middleware"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/config"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/database"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/logger"
+	route "github.com/arif-x/sqlx-postgresql-boilerplate/route/api"
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 )

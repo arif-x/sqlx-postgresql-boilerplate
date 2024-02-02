@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/config"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )

@@ -1,7 +1,7 @@
 package response
 
 import (
-	"github.com/arif-x/sqlx-gofiber-boilerplate/config"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/config"
 	"github.com/gofiber/fiber/v2"
 )
 

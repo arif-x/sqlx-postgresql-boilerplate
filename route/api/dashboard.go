@@ -1,8 +1,8 @@
 package api
 
 import (
-	controllers "github.com/arif-x/sqlx-gofiber-boilerplate/app/http/controller/dashboard"
-	"github.com/arif-x/sqlx-gofiber-boilerplate/app/http/middleware"
+	controllers "github.com/arif-x/sqlx-postgresql-boilerplate/app/http/controller/dashboard"
+	"github.com/arif-x/sqlx-postgresql-boilerplate/app/http/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 

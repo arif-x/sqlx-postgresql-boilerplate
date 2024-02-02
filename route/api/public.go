@@ -1,7 +1,7 @@
 package api
 
 import (
-	controllers "github.com/arif-x/sqlx-gofiber-boilerplate/app/http/controller/public"
+	controllers "github.com/arif-x/sqlx-postgresql-boilerplate/app/http/controller/public"
 	"github.com/gofiber/fiber/v2"
 )
 

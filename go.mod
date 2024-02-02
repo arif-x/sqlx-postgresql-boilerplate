@@ -1,4 +1,4 @@
-module github.com/arif-x/sqlx-gofiber-boilerplate
+module github.com/arif-x/sqlx-postgresql-boilerplate
 
 go 1.21.2
 

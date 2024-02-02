@@ -125,7 +125,7 @@ func PostStore(c *fiber.Ctx) error {
 		if err := fileHelper.SaveFile(file, "./upload/post/", filename); err != nil {
 			return response.InternalServerError(c, errors.New("Can't Upload File"))
 		}
-		thumbnail_data = os.Getenv("APP_PROTOCOL") + os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT") + "/upload/post/" + filename
+		thumbnail_data = os.Getenv("APP_FULL_URL") + "/upload/post/" + filename
 	}
 
 	post.Thumbnail = thumbnail_data
@@ -197,7 +197,7 @@ func PostUpdate(c *fiber.Ctx) error {
 			return response.InternalServerError(c, errors.New("Can't Upload File"))
 		}
 		if filename != "" {
-			thumbnail_data = os.Getenv("APP_PROTOCOL") + os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT") + "/upload/post/" + filename
+			thumbnail_data = os.Getenv("APP_FULL_URL") + "/upload/post/" + filename
 		}
 	}
 

@@ -23,13 +23,15 @@ func (s Seed) UserSeeder() {
 	var inactive_role_uuid uuid.UUID
 	_ = s.db.QueryRow(inactive_q).Scan(&inactive_role_uuid)
 
-	_, err := s.db.Exec(`INSERT INTO users(uuid, name, username, email, role_uuid, password, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+	_, err := s.db.Exec(`INSERT INTO users(uuid, name, username, email, role_uuid, password, email_verified_at, is_active, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
 		uuid.New(),
 		"superadmin",
 		"superadmin",
 		"superadmin@gmail.com",
 		superadmin_role_uuid,
 		password,
+		time.Now(),
+		true,
 		time.Now(),
 	)
 	if err != nil {

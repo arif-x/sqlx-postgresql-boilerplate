@@ -49,7 +49,16 @@ func init() {
 		Use:   "migrate:down",
 		Short: "Migrate Down",
 		Run: func(cmd *cobra.Command, args []string) {
-			MigrateDownFunc()
+			step := args[0]
+			MigrateDownFunc(step)
+		},
+	})
+
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "migrate:fresh",
+		Short: "Migrate Fresh",
+		Run: func(cmd *cobra.Command, args []string) {
+			MigrateFreshFunc()
 		},
 	})
 	rootCmd.AddCommand(&cobra.Command{

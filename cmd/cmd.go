@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/arif-x/sqlx-postgresql-boilerplate/config"
@@ -87,7 +88,55 @@ func MigrateUpFunc() {
 	fmt.Println(string(output))
 }
 
-func MigrateDownFunc() {
+func MigrateDownFunc(step string) {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("can't load .env file. error: %v", err)
+	}
+	config.LoadDBCfg()
+	workDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error getting the current working directory:", err)
+		return
+	}
+	command := ""
+	if step != "" {
+		number, err := strconv.Atoi(step)
+		if err != nil {
+			log.Fatal("Invalid number")
+		}
+		command = fmt.Sprintf(`migrate -path %s/database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down %d`,
+			workDir, config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name, number)
+		run := exec.Command("sh", "-c", command)
+		run.Dir = workDir
+		output, err := run.CombinedOutput()
+		if err != nil {
+			fmt.Println("Error:", err)
+			fmt.Println("Output:", string(output))
+			return
+		}
+		fmt.Println(string(output))
+	} else {
+		stepValue := "1"
+		number, err := strconv.Atoi(stepValue)
+		if err != nil {
+			log.Fatal("Invalid number")
+		}
+		command = fmt.Sprintf(`migrate -path %s/database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down %d`,
+			workDir, config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name, number)
+		run := exec.Command("sh", "-c", command)
+		run.Dir = workDir
+		output, err := run.CombinedOutput()
+		if err != nil {
+			fmt.Println("Error:", err)
+			fmt.Println("Output:", string(output))
+			return
+		}
+		fmt.Println(string(output))
+	}
+}
+
+func MigrateFreshFunc() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("can't load .env file. error: %v", err)

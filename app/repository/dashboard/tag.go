@@ -44,7 +44,7 @@ func (repo *TagRepo) Index(limit int, offset uint, search string, sort_by string
 	}
 
 	defer rows.Close()
-	var items []model.Tag
+	items := []model.Tag{}
 	for rows.Next() {
 		var i model.Tag
 		if err := rows.Scan(

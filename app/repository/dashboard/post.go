@@ -85,7 +85,7 @@ func (repo *PostRepo) Index(limit int, offset uint, search string, sort_by strin
 	}
 
 	defer rows.Close()
-	var items []model.Post
+	items := []model.Post{}
 	for rows.Next() {
 		var i model.Post
 		err := rows.Scan(

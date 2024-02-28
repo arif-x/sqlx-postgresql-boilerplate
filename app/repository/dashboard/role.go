@@ -40,7 +40,7 @@ func (repo *RoleRepo) Index(limit int, offset uint, search string, sort_by strin
 	}
 
 	defer rows.Close()
-	var items []model.Role
+	items := []model.Role{}
 	for rows.Next() {
 		var i model.Role
 		if err := rows.Scan(

@@ -41,7 +41,7 @@ func (repo *UserRepo) Index(limit int, offset uint, search string, sort_by strin
 	}
 
 	defer rows.Close()
-	var items []model.User
+	items := []model.User{}
 	for rows.Next() {
 		var i model.User
 		if err := rows.Scan(

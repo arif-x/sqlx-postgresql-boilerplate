@@ -40,7 +40,7 @@ func (repo *PermissionRepo) Index(limit int, offset uint, search string, sort_by
 	}
 
 	defer rows.Close()
-	var items []model.Permission
+	items := []model.Permission{}
 	for rows.Next() {
 		var i model.Permission
 		if err := rows.Scan(

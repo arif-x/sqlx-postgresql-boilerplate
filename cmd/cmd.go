@@ -73,8 +73,8 @@ func MigrateUpFunc() {
 		fmt.Println("Error getting the current working directory:", err)
 		return
 	}
-	command := fmt.Sprintf(`migrate -path %s/database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose up`,
-		workDir, config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name)
+	command := fmt.Sprintf(`migrate -path ./database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose up`,
+		config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name)
 	run := exec.Command("sh", "-c", command)
 	run.Dir = workDir
 
@@ -99,41 +99,21 @@ func MigrateDownFunc(step string) {
 		fmt.Println("Error getting the current working directory:", err)
 		return
 	}
-	command := ""
-	if step != "" {
-		number, err := strconv.Atoi(step)
-		if err != nil {
-			log.Fatal("Invalid number")
-		}
-		command = fmt.Sprintf(`migrate -path %s/database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down %d`,
-			workDir, config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name, number)
-		run := exec.Command("sh", "-c", command)
-		run.Dir = workDir
-		output, err := run.CombinedOutput()
-		if err != nil {
-			fmt.Println("Error:", err)
-			fmt.Println("Output:", string(output))
-			return
-		}
-		fmt.Println(string(output))
-	} else {
-		stepValue := "1"
-		number, err := strconv.Atoi(stepValue)
-		if err != nil {
-			log.Fatal("Invalid number")
-		}
-		command = fmt.Sprintf(`migrate -path %s/database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down %d`,
-			workDir, config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name, number)
-		run := exec.Command("sh", "-c", command)
-		run.Dir = workDir
-		output, err := run.CombinedOutput()
-		if err != nil {
-			fmt.Println("Error:", err)
-			fmt.Println("Output:", string(output))
-			return
-		}
-		fmt.Println(string(output))
+	number, err := strconv.Atoi(step)
+	if err != nil {
+		log.Fatal("Invalid number")
 	}
+	command := fmt.Sprintf(`migrate -path ./database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down %d`,
+		config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name, number)
+	run := exec.Command("sh", "-c", command)
+	run.Dir = workDir
+	output, err := run.CombinedOutput()
+	if err != nil {
+		fmt.Println("Error:", err)
+		fmt.Println("Output:", string(output))
+		return
+	}
+	fmt.Println(string(output))
 }
 
 func MigrateFreshFunc() {
@@ -147,8 +127,8 @@ func MigrateFreshFunc() {
 		fmt.Println("Error getting the current working directory:", err)
 		return
 	}
-	command := fmt.Sprintf(`migrate -path %s/database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down`,
-		workDir, config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name)
+	command := fmt.Sprintf(`migrate -path ./database/migration/ -database "postgresql://%s:%s@%s:%d/%s?sslmode=disable" -verbose down`,
+		config.DBCfg().User, config.DBCfg().Password, config.DBCfg().Host, config.DBCfg().Port, config.DBCfg().Name)
 	run := exec.Command("sh", "-c", command)
 	run.Dir = workDir
 	run.Stdin = strings.NewReader("y\n")

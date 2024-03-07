@@ -6,11 +6,15 @@ func Search(columns []string, search string, deleted_at string) string {
 	conditions := ""
 	if search != "" {
 		conditions = "WHERE"
+		if len(columns) > 0 {
+			conditions += " ( "
+		}
 		for i := 0; i < len(columns); i++ {
 			if i == (len(columns) - 1) {
-				conditions += fmt.Sprintf(" lower(%s) LIKE '%s' ", columns[i], "%"+search+"%")
+				conditions += fmt.Sprintf(" %s LIKE '%s' ", columns[i], "%"+search+"%")
+				conditions += " ) "
 			} else {
-				conditions += fmt.Sprintf(" lower(%s) LIKE '%s' OR ", columns[i], "%"+search+"%")
+				conditions += fmt.Sprintf(" %s LIKE '%s' OR ", columns[i], "%"+search+"% ")
 			}
 		}
 		conditions += fmt.Sprintf(" AND %s IS NULL", deleted_at)

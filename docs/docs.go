@@ -2181,7 +2181,7 @@ const docTemplate = `{
                         "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Role ID",
                         "name": "role_uuid",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -2337,7 +2337,7 @@ const docTemplate = `{
                         "default": "22863142-1cfe-48cc-9640-ea88926429a4",
                         "description": "Role ID",
                         "name": "role_uuid",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     }
                 ],

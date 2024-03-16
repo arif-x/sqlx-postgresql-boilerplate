@@ -1803,7 +1803,7 @@ paths:
         type: string
       - default: 22863142-1cfe-48cc-9640-ea88926429a4
         description: Role ID
-        in: path
+        in: formData
         name: role_uuid
         required: true
         type: string
@@ -1947,7 +1947,7 @@ paths:
         type: string
       - default: 22863142-1cfe-48cc-9640-ea88926429a4
         description: Role ID
-        in: path
+        in: formData
         name: role_uuid
         required: true
         type: string

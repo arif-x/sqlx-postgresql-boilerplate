@@ -3,6 +3,8 @@ package dashboard
 import (
 	"database/sql"
 
+	hash "github.com/arif-x/sqlx-postgresql-boilerplate/pkg/hash"
+
 	model "github.com/arif-x/sqlx-postgresql-boilerplate/app/model/dashboard"
 	repo "github.com/arif-x/sqlx-postgresql-boilerplate/app/repository/dashboard"
 	"github.com/arif-x/sqlx-postgresql-boilerplate/pkg/database"
@@ -89,6 +91,13 @@ func UserStore(c *fiber.Ctx) error {
 		return response.BadRequest(c, err)
 	}
 
+	password, err := hash.Hash([]byte(user.Password))
+	if err != nil {
+		return response.InternalServerError(c, err)
+	}
+
+	user.Password = password
+
 	repository := repo.NewUserRepo(database.GetDB())
 	res, err := repository.Store(user)
 
@@ -122,6 +131,15 @@ func UserUpdate(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(user); err != nil {
 		return response.BadRequest(c, err)
+	}
+
+	if user.Password != "" {
+		password, err := hash.Hash([]byte(user.Password))
+		if err != nil {
+			return response.InternalServerError(c, err)
+		}
+
+		user.Password = password
 	}
 
 	repository := repo.NewUserRepo(database.GetDB())

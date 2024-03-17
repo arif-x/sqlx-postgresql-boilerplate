@@ -76,9 +76,9 @@ func (repo *SyncPermissionRepo) Update(uuid string, request *model.UpdateSyncPer
 	}
 
 	for i := 0; i < len(request.PermissionUUID); i++ {
-		check_query := fmt.Sprintf(`SELECT %s FROM permissions WHERE roles.uuid = $1`, request.PermissionUUID[i])
+		check_query := fmt.Sprintf(`SELECT uuid, name FROM permissions WHERE uuid = $1`)
 		var items model.Permission
-		cerr := tx.QueryRowContext(context.Background(), check_query, uuid).Scan(
+		cerr := tx.QueryRowContext(context.Background(), check_query, request.PermissionUUID[i]).Scan(
 			&items.UUID,
 			&items.Name,
 		)
